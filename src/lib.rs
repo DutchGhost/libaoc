@@ -66,8 +66,6 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 /// ```
 #[inline]
 pub fn splitter<'a, I: Iterator<Item = &'a str>, N: FromStr>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
-where
-    <N as FromStr>::Err: std::fmt::Debug,
 {
     iter.map(|item| item.parse()).collect()
 }
