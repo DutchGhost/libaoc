@@ -179,6 +179,23 @@ impl Display for Direction {
     }
 }
 
+/// A position. Great to use in maps or graphs.
+/// #Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::Position;
+/// 
+/// fn main() {
+///     let tuple = (10i32, 21i32);
+///     let p = Position::new(10i32, 21i32);
+///     assert_eq!(Position::from(tuple), p);
+/// 
+///     let othertuple = (10u8, 1u8);
+///     let otherp = Position::new(10u8, 1u8);
+///     
+///     assert_eq!(Position::from(othertuple), otherp);
+/// }
+/// ```
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 pub struct Position<N>
 where
@@ -224,6 +241,14 @@ where
     }
 }
 
+impl <N>From<(N, N)> for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + From<u8>,
+{
+    fn from((n1, n2): (N, N)) -> Position<N> {
+        Position {x: n1, y: n2}
+    }
+}
 
 /// Applies any given operator to any given tuple.
 /// #Examples
