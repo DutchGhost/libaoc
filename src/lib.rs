@@ -48,7 +48,7 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
     if a > b { (b, a) } else { (a, b) }
 }
 
-/// Takes any Iterator, where the items are an &'a str.
+/// Takes any Iterator, where the items implement AsRef<str>.
 /// Returns a Vec<N>, where N implements FromStr.
 /// Returns an error if an error occured.
 /// #Examples
@@ -85,7 +85,7 @@ where
     I: Iterator<Item = S>,
     N: FromStr
 {
-    /// Takes any Iterator, where the items are an &'a str.
+    /// Takes any Iterator, where the items are implement AsRef<str>.
     /// Returns a Vec<N>, where N implements FromStr.
     /// Returns an Error if an error occured.
     /// #Examples
