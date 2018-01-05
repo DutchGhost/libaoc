@@ -224,96 +224,90 @@ where
     }
 }
 
-pub mod macros {
-    /// Applies any given operator to any given tuple.
-    /// #Examples
-    /// ```
-    /// #[macro_use(apply)]
-    /// extern crate libaoc;
-    /// 
-    /// fn main() {
-    ///     assert_eq!(10, apply!(+, (5, 4, 1)));
-    ///     assert_eq!(0, apply!(-, (5, 4, 1)));
-    /// }
-    #[macro_export]
-    macro_rules! apply {
-        ($oper:tt, ( $first:expr $(, $rest:expr)* )) => { apply!( @inner ($oper) ($first) ($($rest,)*) ) };
-        (@inner ($oper:tt) ($prev:expr) ($curr:expr, $($rest:expr,)*) ) => { apply!( @inner ($oper) ($prev $oper $curr) ($($rest,)*) ) };
-        (@inner ($oper:tt)($final:expr) ()) => { $final };
-    }
 
-    /// Subtracts all items in a tuple.
-    /// #Examples
-    /// ```
-    /// #[macro_use(sub, apply)]
-    /// extern crate libaoc;
-    /// 
-    /// fn main() {
-    ///     assert_eq!(0, sub!((5, 4, 1)));
-    /// }
-    /// ```
-    #[macro_export]
-    macro_rules! sub {
-        ($tup:tt) => (apply!(-, $tup))
-    }
-
-    /// Adds all items in a tuple.
-    /// #Examples
-    /// ```
-    /// #[macro_use(add, apply)]
-    /// extern crate libaoc;
-    /// 
-    /// fn main() {
-    ///     assert_eq!(10, add!((5, 4, 1)));
-    /// }
-    /// ```
-    #[macro_export]
-    macro_rules! add {
-        ($tup:tt) => (apply!(+, $tup))
-    }
-
-    /// Divides all items in a tuple. Panics if divided by 0.
-    /// #Examples
-    /// ```
-    /// #[macro_use(div, apply)]
-    /// extern crate libaoc;
-    /// 
-    /// fn main() {
-    ///     assert_eq!(2, div!((8, 4, 1)));
-    /// }
-    /// ```
-    #[macro_export]
-    macro_rules! div {
-        ($tup:tt) => (apply!(/, $tup))
-    }
-
-    /// Multiplies all items in a tuple.
-    /// #Examples
-    /// ```
-    /// #[macro_use(mul, apply)]
-    /// extern crate libaoc;
-    /// 
-    /// fn main() {
-    ///     assert_eq!(80, mul!((8, 5, 2)));
-    /// }
-    /// ```
-    #[macro_export]
-    macro_rules! mul {
-        ($tup:tt) => (apply!(*, $tup))
-    }
-
-    /// 'Remainders' all items in a tuple.
-    /// #Examples
-    /// ```
-    /// #[macro_use(rem, apply)]
-    /// extern crate libaoc;
-    /// 
-    /// fn main() {
-    ///     assert_eq!(2, rem!((5, 10, 3)));
-    /// }
-    /// ```
-    #[macro_export]
-    macro_rules! rem {
-        ($tup:tt) => (apply!(%, $tup))
-    }
+/// Applies any given operator to any given tuple.
+/// #Examples
+/// ```
+/// #[macro_use(apply)]
+/// extern crate libaoc;
+/// 
+/// fn main() {
+///     assert_eq!(10, apply!(+, (5, 4, 1)));
+///     assert_eq!(0, apply!(-, (5, 4, 1)));
+/// }
+#[macro_export]
+macro_rules! apply {
+    ($oper:tt, ( $first:expr $(, $rest:expr)* )) => { apply!( @inner ($oper) ($first) ($($rest,)*) ) };
+    (@inner ($oper:tt) ($prev:expr) ($curr:expr, $($rest:expr,)*) ) => { apply!( @inner ($oper) ($prev $oper $curr) ($($rest,)*) ) };
+    (@inner ($oper:tt)($final:expr) ()) => { $final };
+}
+/// Subtracts all items in a tuple.
+/// #Examples
+/// ```
+/// #[macro_use(sub, apply)]
+/// extern crate libaoc;
+/// 
+/// fn main() {
+///     assert_eq!(0, sub!((5, 4, 1)));
+/// }
+/// ```
+#[macro_export]
+macro_rules! sub {
+    ($tup:tt) => (apply!(-, $tup))
+}
+/// Adds all items in a tuple.
+/// #Examples
+/// ```
+/// #[macro_use(add, apply)]
+/// extern crate libaoc;
+/// 
+/// fn main() {
+///     assert_eq!(10, add!((5, 4, 1)));
+/// }
+/// ```
+#[macro_export]
+macro_rules! add {
+    ($tup:tt) => (apply!(+, $tup))
+}
+/// Divides all items in a tuple. Panics if divided by 0.
+/// #Examples
+/// ```
+/// #[macro_use(div, apply)]
+/// extern crate libaoc;
+/// 
+/// fn main() {
+///     assert_eq!(2, div!((8, 4, 1)));
+/// }
+/// ```
+#[macro_export]
+macro_rules! div {
+    ($tup:tt) => (apply!(/, $tup))
+}
+/// Multiplies all items in a tuple.
+/// #Examples
+/// ```
+/// #[macro_use(mul, apply)]
+/// extern crate libaoc;
+/// 
+/// fn main() {
+///     assert_eq!(80, mul!((8, 5, 2)));
+/// }
+/// ```
+#[macro_export]
+macro_rules! mul {
+    ($tup:tt) => (apply!(*, $tup))
+}
+/// 'Remainders' all items in a tuple.
+/// #Examples
+/// ```
+/// #[macro_use(rem, apply)]
+/// extern crate libaoc;
+/// 
+/// fn main() {
+///     assert_eq!(2, rem!((5, 10, 3)));
+/// }
+/// ```
+#[macro_export]
+macro_rules! rem {
+    ($tup:tt) => (apply!(%, $tup))
 }
