@@ -285,7 +285,6 @@ where
         + ops::AddAssign<N>
         + ops::Sub<N>
         + ops::SubAssign<N>
-        + From<u8>
         + fmt::Display,
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
