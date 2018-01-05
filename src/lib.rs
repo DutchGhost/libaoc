@@ -3,6 +3,45 @@ use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
 use std::ops;
 
+pub trait Absolute {
+    fn abs(self) -> Self;
+}
+
+/// Used to implement `Absolute` for any i.. integer type.
+/// Any i.. integer type can be negative, so .abs() is needed in order to return the absolute value.
+macro_rules! i_absolute {
+    ($type:ty) => (
+        impl Absolute for $type {
+            fn abs(self) -> Self {
+                self.abs()
+            }
+        }
+    )
+}
+
+/// Used to implement `Absolute` for any u.. integer type.
+/// Any u.. integer type can not be negative, so `self` is already the absolute value.
+macro_rules! u_absolute {
+    ($type:ty) => (
+        impl Absolute for $type {
+            fn abs(self) -> Self {
+                self
+            }
+        }
+    )
+}
+i_absolute!(i64);
+i_absolute!(i32);
+i_absolute!(i16);
+i_absolute!(i8);
+i_absolute!(isize);
+
+u_absolute!(u64);
+u_absolute!(u32);
+u_absolute!(u16);
+u_absolute!(u8);
+u_absolute!(usize);
+
 /// Returns a tuple, sorted by the max value.
 /// #Examples
 /// ```
@@ -183,15 +222,15 @@ impl Display for Direction {
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::Position;
+/// use libaoc::{Position, ManhattenDst};
 /// 
 /// fn main() {
-///     let tuple = (10i32, 21i32);
-///     let p = Position::new(10i32, 21i32);
+///     let tuple = (-10i32, 21i32);
+///     let p = Position::new(-10i32, 21i32);
 ///     assert_eq!(Position::from(tuple), p);
-/// 
-///     let othertuple = (10u8, 1u8);
-///     let otherp = Position::new(10u8, 1u8);
+///     
+///     let othertuple = (10u16, 1u16);
+///     let otherp = Position::new(10u16, 1u16);
 ///     
 ///     assert_eq!(Position::from(othertuple), otherp);
 /// }
@@ -247,6 +286,56 @@ where
 {
     fn from((n1, n2): (N, N)) -> Position<N> {
         Position {x: n1, y: n2}
+    }
+}
+
+pub trait ManhattenDst<N>
+where
+    N: ops::Add<N>,
+{
+    fn manhattendst(self) -> <N as std::ops::Add>::Output;
+}
+
+impl <N> ManhattenDst<N> for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + From<u8> + Absolute
+{
+
+    /// Returns the manhatten distance of any tuple containing type N.
+    /// the manhatten distance is the sum of the absolute values of a coordinate.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::{ManhattenDst, Position};
+    /// 
+    /// fn main() {
+    ///     let pos = Position::new(-1, 11i16);
+    ///     assert_eq!(12, pos.manhattendst());
+    /// }
+    /// ```
+    fn manhattendst(self) -> <N as std::ops::Add>::Output {
+        self.x.abs() + self.y.abs()
+    }
+}
+
+impl <N> ManhattenDst<N> for (N, N)
+where
+    N: ops::Add<N> + Absolute
+{   
+    /// Returns the manhatten distance of any tuple containing type N.
+    /// the manhatten distance is the sum of the absolute values of a coordinate.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::ManhattenDst;
+    /// 
+    /// fn main() {
+    ///     let tup = (-10, 11i64);
+    ///     assert_eq!(21, tup.manhattendst());
+    /// }
+    /// ```
+    fn manhattendst(self) -> <N as std::ops::Add>::Output {
+        self.0.abs() + self.1.abs()
     }
 }
 
