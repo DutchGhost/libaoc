@@ -65,7 +65,11 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 /// }
 /// ```
 #[inline]
-pub fn splitter<'a, S: AsRef<str>, I: Iterator<Item = S>, N: FromStr>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
+pub fn splitter<N, S, I>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
+where
+    N: FromStr,
+    S: AsRef<str>,
+    I: Iterator<Item = S>,
 {
     iter.map(|item| item.as_ref().parse()).collect()
 }
