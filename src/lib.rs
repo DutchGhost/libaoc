@@ -101,6 +101,44 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
     if a > b { (b, a) } else { (a, b) }
 }
 
+/// 2 functions to 'sort' a tuple.
+/// `minmax` returns the tuple in ascending order, `maxmin` in descending order.
+/// #Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::MinMax;
+/// fn main() {
+///     let mut tup = (20, 10);
+///     let mutborrow = &mut tup;
+///     
+///     assert_eq!((10, 20), mutborrow.minmax());
+/// 
+///     let mut a = 1;
+///     let mut b = 2;
+///     let t = (&mut a, &mut b);
+/// 
+///     assert_eq!((&mut 2, &mut 1), t.maxmin());
+/// }
+/// ```
+pub trait MinMax<T>
+where T: Ord
+{   
+    fn minmax(self) -> Self;
+    fn maxmin(self) -> Self;
+}
+
+impl <T> MinMax<T> for (T, T)
+where
+    T: Ord
+{
+    fn minmax(self) -> Self {
+        if self.0 < self.1 { (self.0, self.1) } else { (self.1, self.0) }
+    }
+    fn maxmin(self) -> Self {
+        if self.0 > self.1 { (self.0, self.1) } else { (self.1, self.0) }
+    }
+}
+
 /// Takes any Iterator, where the items implement AsRef<str>.
 /// Returns a Vec<N>, where N implements FromStr.
 /// Returns an error if an error occured.
@@ -117,13 +155,6 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 ///     assert_eq!(vec![1, 2, 3, 4, 5, 6], splitter(s.lines()).unwrap());
 /// }
 /// ```
-
-pub trait minmax<T>
-where T: Ord
-{
-    fn minmax((a, b): (T, T)) -> (T, T);
-    fn maxmin((a, b): (T, T)) -> (T, T);
-}
 #[inline]
 pub fn splitter<N, S, I>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
 where
