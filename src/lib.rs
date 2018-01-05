@@ -117,6 +117,13 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 ///     assert_eq!(vec![1, 2, 3, 4, 5, 6], splitter(s.lines()).unwrap());
 /// }
 /// ```
+
+pub trait minmax<T>
+where T: Ord
+{
+    fn minmax((a, b): (T, T)) -> (T, T);
+    fn maxmin((a, b): (T, T)) -> (T, T);
+}
 #[inline]
 pub fn splitter<N, S, I>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
 where
