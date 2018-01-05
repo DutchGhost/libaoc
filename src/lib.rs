@@ -4,6 +4,16 @@ use std::fmt::{self, Display, Formatter};
 use std::ops;
 
 pub trait Absolute {
+    /// A function to get the absolute value of a number.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::Absolute;
+    /// fn main() {
+    ///     assert_eq!(10, (-10i32).abs());
+    ///     assert_eq!(20, 20u32.abs());
+    /// }
+    /// ```
     fn abs(self) -> Self;
 }
 
