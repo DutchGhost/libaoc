@@ -65,9 +65,9 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 /// }
 /// ```
 #[inline]
-pub fn splitter<'a, I: Iterator<Item = &'a str>, N: FromStr>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
+pub fn splitter<'a, S: AsRef<str>, I: Iterator<Item = S>, N: FromStr>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
 {
-    iter.map(|item| item.parse()).collect()
+    iter.map(|item| item.as_ref().parse()).collect()
 }
 
 /// An enum to reprisent a direction.
