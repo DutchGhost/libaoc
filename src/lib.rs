@@ -3,19 +3,6 @@ use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
 use std::ops;
 
-pub trait num       { }
-
-impl num for isize  { }
-impl num for i64    { }
-impl num for i32    { }
-impl num for i16    { }
-impl num for i8     { }
-impl num for usize  { }
-impl num for u64    { }
-impl num for u32    { }
-impl num for u16    { }
-impl num for u8     { }
-
 pub trait Absolute {
     fn abs(self) -> Self;
 }
@@ -259,16 +246,29 @@ where
 
 impl<N> Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>
 {
     /// Returns a new Position.
     pub fn new(x: N, y: N) -> Position<N> {
         Position { x: x, y: y }
     }
 
-    /// Changes the position based on the direction.
+    /// Changes the position with `steps` based on the direction.
     /// If the direction is facing down, y is incremented, if the direction if facing up, y is decremented.
     /// changes the position by `steps`.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::{Direction, Position};
+    /// fn main() {
+    ///     let mut p = Position::new(0, 0);
+    ///     let d = Direction::init_left();
+    ///     
+    ///     p.change(&d, 1);
+    /// 
+    ///     let cmppos = Position::new(-1, 0);
+    ///     assert_eq!(cmppos, p);
+    /// }
     pub fn change(&mut self, direction: &Direction, steps: N) {
         match direction {
             &Direction::Up => self.y -= steps,
