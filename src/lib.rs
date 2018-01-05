@@ -58,18 +58,18 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 ///
 /// fn main () {
 ///     let s = "1, 2, 3, 4, 5";
-///     assert_eq!(vec![1, 2, 3, 4, 5], splitter(s.split(", ")));
+///     assert_eq!(vec![1, 2, 3, 4, 5], splitter(s.split(", ")).unwrap());
 ///
 ///     let s = "1\n2\n3\n4\n5\n6";
-///     assert_eq!(vec![1, 2, 3, 4, 5, 6], splitter(s.lines()));
+///     assert_eq!(vec![1, 2, 3, 4, 5, 6], splitter(s.lines()).unwrap());
 /// }
 /// ```
 #[inline]
-pub fn splitter<'a, I: Iterator<Item = &'a str>, N: FromStr>(iter: I) -> Vec<N>
+pub fn splitter<'a, I: Iterator<Item = &'a str>, N: FromStr>(iter: I) -> Result<Vec<N>, <N as FromStr>::Err>
 where
     <N as FromStr>::Err: std::fmt::Debug,
 {
-    iter.map(|item| item.parse().unwrap()).collect()
+    iter.map(|item| item.parse()).collect()
 }
 
 /// An enum to reprisent a direction.
