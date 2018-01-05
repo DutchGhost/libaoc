@@ -60,7 +60,7 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 ///     let s = "1, 2, 3, 4, 5";
 ///     assert_eq!(vec![1, 2, 3, 4, 5], splitter(s.split(", ")).unwrap());
 ///
-///     let s = "1\n2\n3\n4\n5\n6";
+///     let s = String::from("1\n2\n3\n4\n5\n6");
 ///     assert_eq!(vec![1, 2, 3, 4, 5, 6], splitter(s.lines()).unwrap());
 /// }
 /// ```
