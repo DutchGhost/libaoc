@@ -22,6 +22,8 @@ pub trait Absolute {
 macro_rules! i_absolute {
     ($type:ty) => (
         impl Absolute for $type {
+
+            #[inline]
             fn abs(self) -> Self {
                 self.abs()
             }
@@ -34,6 +36,8 @@ macro_rules! i_absolute {
 macro_rules! u_absolute {
     ($type:ty) => (
         impl Absolute for $type {
+
+            #[inline]
             fn abs(self) -> Self {
                 self
             }
@@ -172,26 +176,31 @@ pub enum Direction {
 
 impl Direction {
     /// Initializes a direction facing to the left.
+    #[inline]
     pub fn init_left() -> Direction {
         Direction::Left
     }
 
     /// Initializes a direction facing to the right.
+    #[inline]
     pub fn init_right() -> Direction {
         Direction::Right
     }
 
     /// Initializes a direction facing up.
+    #[inline]
     pub fn init_up() -> Direction {
         Direction::Up
     }
 
     /// Initializes a direction facing down.
+    #[inline]
     pub fn init_down() -> Direction {
         Direction::Down
     }
 
     /// turns the direction to the right.
+    #[inline]
     pub fn turn_right(self) -> Direction {
         match self {
             Direction::Up => Direction::Right,
@@ -202,6 +211,7 @@ impl Direction {
     }
 
     /// turns the direction to the left.
+    #[inline]
     pub fn turn_left(self) -> Direction {
         match self {
             Direction::Up => Direction::Left,
@@ -212,6 +222,7 @@ impl Direction {
     }
 
     /// Reverses the current direction.
+    #[inline]
     pub fn reverse(self) -> Direction {
         match self {
             Direction::Up => Direction::Down,
@@ -279,6 +290,7 @@ where
     ///     let otherpos = Position::new(-1, 0);
     ///     assert_eq!(pos, otherpos);
     /// }
+    #[inline]
     pub fn change(&mut self, direction: &Direction, steps: N) {
         match direction {
             &Direction::Up => self.y -= steps,
@@ -306,6 +318,7 @@ impl <N>From<(N, N)> for Position<N>
 where
     N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
 {
+    #[inline]
     fn from((n1, n2): (N, N)) -> Position<N> {
         Position {x: n1, y: n2}
     }
@@ -336,6 +349,7 @@ impl <N> ManhattenDst<N> for Position<N>
 where
     N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
 {
+    #[inline]
     fn manhattendst(self) -> <N as std::ops::Add>::Output {
         self.x.abs() + self.y.abs()
     }
@@ -345,6 +359,7 @@ impl <N> ManhattenDst<N> for (N, N)
 where
     N: ops::Add<N> + Absolute
 {   
+    #[inline]
     fn manhattendst(self) -> <N as std::ops::Add>::Output {
         self.0.abs() + self.1.abs()
     }
