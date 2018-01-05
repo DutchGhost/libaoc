@@ -70,20 +70,20 @@ pub fn splitter<'a, S: AsRef<str>, I: Iterator<Item = S>, N: FromStr>(iter: I) -
     iter.map(|item| item.as_ref().parse()).collect()
 }
 
-pub trait ToNum<I, S, N>
+pub trait ToNum<N, S, I>
 where
+    N: FromStr,
     S: AsRef<str>,
     I: Iterator<Item = S>,
-    N: FromStr
 {
     fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err>;
 }
 
-impl <I, S, N> ToNum<I, S, N> for I
+impl <N, S, I> ToNum<N, S, I> for I
 where
+    N: FromStr,
     S: AsRef<str>,
     I: Iterator<Item = S>,
-    N: FromStr
 {
     /// Takes any Iterator, where the items are implement AsRef<str>.
     /// Returns a Vec<N>, where N implements FromStr.
