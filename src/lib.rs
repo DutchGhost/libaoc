@@ -299,6 +299,44 @@ where
             &Direction::Left => self.x -= steps,
         }
     }
+
+    /// Adds `steps` to y.
+    /// see [decrement_y](struct.Position.html#method.decrement_y), [increment_x](struct.Position.html#method.increment_x), [decrement_x](struct.Position.html#method.decrement_x)
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::{Absolute, Position};
+    /// fn main() {
+    ///     let mut pos = Position::new(0, 0);
+    ///     pos.increment_y(10);
+    ///     assert_eq!(Position::new(0, 10), pos);
+    /// }
+    /// ```
+    #[inline]
+    pub fn increment_y(&mut self, steps: N) {
+        self.y += steps;
+    }
+
+    /// Subtracts `steps` from y.
+    /// see [increment_y](struct.Position.html#method.increment_y), [increment_x](struct.Position.html#method.increment_x), [decrement_x](struct.Position.html#method.decrement_x)
+    #[inline]
+    pub fn decrement_y(&mut self, steps: N) {
+        self.y -= steps;
+    }
+
+    /// Adds `steps` to x.
+    /// see [increment_y](struct.Position.html#method.increment_y), [decrement_y](struct.Position.html#method.decrement_y), [decrement_x](struct.Position.html#method.decrement_x)
+    #[inline]
+    pub fn increment_x(&mut self, steps: N) {
+        self.x += steps;
+    }
+
+    /// Subtracts `steps` from x.
+    /// see [increment_y](struct.Position.html#method.increment_y), [decrement_y](struct.Position.html#method.decrement_y), [increment_x](struct.Position.html#method.increment_x)
+    #[inline]
+    pub fn decrement_x(&mut self, steps: N) {
+        self.x -= steps;
+    }
 }
 
 impl<N> Display for Position<N>
@@ -321,6 +359,15 @@ where
     #[inline]
     fn from((n1, n2): (N, N)) -> Position<N> {
         Position {x: n1, y: n2}
+    }
+}
+
+impl<N> Into<(N, N)> for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
+{
+    fn into(self) -> (N, N) {
+        (self.x, self.y)
     }
 }
 
