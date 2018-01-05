@@ -50,7 +50,7 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 
 /// Takes any Iterator, where the items are an &'a str.
 /// Returns a Vec<N>, where N implements FromStr.
-/// Panics if an error occures.
+/// Returns an error if an error occured.
 /// #Examples
 /// ```
 /// extern crate libaoc;
@@ -87,7 +87,7 @@ where
 {
     /// Takes any Iterator, where the items are an &'a str.
     /// Returns a Vec<N>, where N implements FromStr.
-    /// Panics if an error occures.
+    /// Returns an Error if an error occured.
     /// #Examples
     /// ```
     /// extern crate libaoc;
