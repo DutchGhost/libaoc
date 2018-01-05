@@ -3,7 +3,18 @@ use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
 use std::ops;
 
-pub trait num { }
+pub trait num       { }
+
+impl num for isize  { }
+impl num for i64    { }
+impl num for i32    { }
+impl num for i16    { }
+impl num for i8     { }
+impl num for usize  { }
+impl num for u64    { }
+impl num for u32    { }
+impl num for u16    { }
+impl num for u8     { }
 
 pub trait Absolute {
     fn abs(self) -> Self;
