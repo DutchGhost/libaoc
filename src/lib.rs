@@ -3,6 +3,8 @@ use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
 use std::ops;
 
+pub trait num { }
+
 pub trait Absolute {
     fn abs(self) -> Self;
 }
@@ -238,7 +240,7 @@ impl Display for Direction {
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 pub struct Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + From<u8>,
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
 {
     x: N,
     y: N,
@@ -246,7 +248,7 @@ where
 
 impl<N> Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + From<u8>,
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
 {
     /// Returns a new Position.
     pub fn new(x: N, y: N) -> Position<N> {
@@ -282,7 +284,7 @@ where
 
 impl <N>From<(N, N)> for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + From<u8>,
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
 {
     fn from((n1, n2): (N, N)) -> Position<N> {
         Position {x: n1, y: n2}
@@ -298,10 +300,10 @@ where
 
 impl <N> ManhattenDst<N> for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + From<u8> + Absolute
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
 {
 
-    /// Returns the manhatten distance of any tuple containing type N.
+    /// Returns the manhatten distance of any Position with type N.
     /// the manhatten distance is the sum of the absolute values of a coordinate.
     /// #Examples
     /// ```
