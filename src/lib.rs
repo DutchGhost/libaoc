@@ -306,16 +306,10 @@ pub trait ManhattenDst<N>
 where
     N: ops::Add<N>,
 {
-    fn manhattendst(self) -> <N as std::ops::Add>::Output;
-}
-
-impl <N> ManhattenDst<N> for Position<N>
-where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
-{
-
     /// Returns the manhatten distance of any Position with type N.
+    /// A position is either a tuple, or the struct itself see [Position](struct.Position.html).
     /// the manhatten distance is the sum of the absolute values of a coordinate.
+    ///
     /// #Examples
     /// ```
     /// extern crate libaoc;
@@ -326,6 +320,13 @@ where
     ///     assert_eq!(12, pos.manhattendst());
     /// }
     /// ```
+    fn manhattendst(self) -> <N as std::ops::Add>::Output;
+}
+
+impl <N> ManhattenDst<N> for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
+{
     fn manhattendst(self) -> <N as std::ops::Add>::Output {
         self.x.abs() + self.y.abs()
     }
@@ -335,18 +336,6 @@ impl <N> ManhattenDst<N> for (N, N)
 where
     N: ops::Add<N> + Absolute
 {   
-    /// Returns the manhatten distance of any tuple containing type N.
-    /// the manhatten distance is the sum of the absolute values of a coordinate.
-    /// #Examples
-    /// ```
-    /// extern crate libaoc;
-    /// use libaoc::ManhattenDst;
-    /// 
-    /// fn main() {
-    ///     let tup = (-10, 11i64);
-    ///     assert_eq!(21, tup.manhattendst());
-    /// }
-    /// ```
     fn manhattendst(self) -> <N as std::ops::Add>::Output {
         self.0.abs() + self.1.abs()
     }
