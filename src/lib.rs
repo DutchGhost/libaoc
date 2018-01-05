@@ -70,6 +70,43 @@ pub fn splitter<'a, S: AsRef<str>, I: Iterator<Item = S>, N: FromStr>(iter: I) -
     iter.map(|item| item.as_ref().parse()).collect()
 }
 
+pub trait ToNum<I, S, N>
+where
+    S: AsRef<str>,
+    I: Iterator<Item = S>,
+    N: FromStr
+{
+    fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err>;
+}
+
+impl <I, S, N> ToNum<I, S, N> for I
+where
+    S: AsRef<str>,
+    I: Iterator<Item = S>,
+    N: FromStr
+{
+    /// Takes any Iterator, where the items are an &'a str.
+    /// Returns a Vec<N>, where N implements FromStr.
+    /// Panics if an error occures.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::{ToNum};
+    ///
+    /// fn main () {
+    ///     let s = "1, 2, 3, 4, 5";
+    ///     assert_eq!(vec![1, 2, 3, 4, 5], s.split(", ").to_num().unwrap());
+    ///
+    ///     let s = String::from("1\n2\n3\n4\n5\n6");
+    ///     assert_eq!(vec![1, 2, 3, 4, 5, 6], s.lines().to_num().unwrap());
+    /// }
+    /// ```
+
+    fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err> {
+        self.map(|item| item.as_ref().parse()).collect()
+    }
+}
+
 /// An enum to reprisent a direction.
 /// Is great to use in maps, or when 'following' some kind of line.
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
