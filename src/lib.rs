@@ -235,14 +235,14 @@ impl Display for Direction {
 /// use libaoc::{Position, ManhattenDst};
 /// 
 /// fn main() {
-///     let tuple = (-10i32, 21i32);
-///     let p = Position::new(-10i32, 21i32);
-///     assert_eq!(Position::from(tuple), p);
+///     let tup = (-10i32, 21i32);
+///     let pos = Position::new(-10i32, 21i32);
+///     assert_eq!(Position::from(tup), pos);
 ///     
-///     let othertuple = (10u16, 1u16);
-///     let otherp = Position::new(10u16, 1u16);
+///     let tuple = (10u16, 1u16);
+///     let position = Position::new(10u16, 1u16);
 ///     
-///     assert_eq!(Position::from(othertuple), otherp);
+///     assert_eq!(Position::from(tuple), position);
 /// }
 /// ```
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
@@ -271,13 +271,13 @@ where
     /// extern crate libaoc;
     /// use libaoc::{Direction, Position};
     /// fn main() {
-    ///     let mut p = Position::new(0, 0);
-    ///     let d = Direction::init_left();
+    ///     let mut pos = Position::new(0, 0);
+    ///     let dir = Direction::init_left();
     ///     
-    ///     p.change(&d, 1);
+    ///     pos.change(&dir, 1);
     /// 
-    ///     let cmppos = Position::new(-1, 0);
-    ///     assert_eq!(cmppos, p);
+    ///     let otherpos = Position::new(-1, 0);
+    ///     assert_eq!(pos, otherpos);
     /// }
     pub fn change(&mut self, direction: &Direction, steps: N) {
         match direction {
