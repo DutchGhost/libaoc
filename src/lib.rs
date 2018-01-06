@@ -403,6 +403,7 @@ impl<N> Into<(N, N)> for Position<N>
 where
     N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
 {
+    #[inline]
     fn into(self) -> (N, N) {
         (self.x, self.y)
     }
