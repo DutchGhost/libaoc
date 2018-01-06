@@ -379,6 +379,10 @@ where
     pub fn decrement_x(&mut self, steps: N) {
         self.x -= steps;
     }
+
+    pub fn x<'a, 's: 'a>(&'s self) -> &'a N {&self.x}
+    
+    pub fn y<'a, 's: 'a>(&'s self) -> &'a N {&self.y}
 }
 
 impl<N> Display for Position<N>
