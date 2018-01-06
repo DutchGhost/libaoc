@@ -556,6 +556,7 @@ macro_rules! rem {
 /// fn main() {
 ///     let f = noop!(&mut (i64, i64));
 ///     assert_eq!((10, 10), take_func(f, (10, 10)));
+/// 
 ///     let real_func = |n: &mut (i64, i64)| {n.0 += 1; n.1 += 2;};
 ///     assert_eq!((11, 12), take_func(real_func, (10, 10))); 
 /// }
