@@ -214,6 +214,7 @@ pub enum Direction {
     Down,
     Right,
     Left,
+    Init,
 }
 
 impl Direction {
@@ -241,6 +242,12 @@ impl Direction {
         Direction::Down
     }
 
+    /// Initializes a direction that has no facing yet.
+    #[inline]
+    pub fn init_init() -> Direction {
+        Direction::Init
+    }
+
     /// turns the direction to the right.
     #[inline]
     pub fn turn_right(self) -> Direction {
@@ -249,6 +256,7 @@ impl Direction {
             Direction::Right => Direction::Down,
             Direction::Down => Direction::Left,
             Direction::Left => Direction::Up,
+            Direction::Init => Direction::Right,
         }
     }
 
@@ -260,6 +268,7 @@ impl Direction {
             Direction::Left => Direction::Down,
             Direction::Down => Direction::Right,
             Direction::Right => Direction::Up,
+            Direction::Init => Direction::Left,
         }
     }
 
@@ -270,7 +279,8 @@ impl Direction {
             Direction::Up => Direction::Down,
             Direction::Down => Direction::Up,
             Direction::Left => Direction::Right,
-            Direction::Right => Direction::Right,
+            Direction::Right => Direction::Left,
+            Direction::Init => panic!("Reversing a Direction::Init is not possible"),
         }
     }
 }
@@ -339,6 +349,7 @@ where
             &Direction::Down => self.y += steps,
             &Direction::Right => self.x += steps,
             &Direction::Left => self.x -= steps,
+            &Direction::Init => return,
         }
     }
 
