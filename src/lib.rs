@@ -409,44 +409,54 @@ where
     }
 }
 
+/// Returns the manhatten distance of any Position with type N.
+/// A position is either a tuple, or the struct itself see [Position](struct.Position.html).
+/// the manhatten distance is the sum of the absolute values of a coordinate.
+///
+/// #Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::{ManhattenDst, Position};
+/// 
+/// fn main() {
+///     let pos = Position::new(-1, 11i16);
+///     assert_eq!(12, pos.manhattendst());
+/// }
+/// ```
 pub trait ManhattenDst<N>
 where
-    N: ops::Add<N>,
+    N: ops::Add<Output = N>,
 {
-    /// Returns the manhatten distance of any Position with type N.
-    /// A position is either a tuple, or the struct itself see [Position](struct.Position.html).
-    /// the manhatten distance is the sum of the absolute values of a coordinate.
-    ///
-    /// #Examples
-    /// ```
-    /// extern crate libaoc;
-    /// use libaoc::{ManhattenDst, Position};
-    /// 
-    /// fn main() {
-    ///     let pos = Position::new(-1, 11i16);
-    ///     assert_eq!(12, pos.manhattendst());
-    /// }
-    /// ```
-    fn manhattendst(self) -> <N as std::ops::Add>::Output;
+    fn manhattendst(self) -> N;
 }
 
 impl <N> ManhattenDst<N> for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
+    N: ops::Add<Output = N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
 {
     #[inline]
-    fn manhattendst(self) -> <N as std::ops::Add>::Output {
+    fn manhattendst(self) -> N {
         self.x.abs() + self.y.abs()
     }
 }
 
 impl <N> ManhattenDst<N> for (N, N)
 where
-    N: ops::Add<N> + Absolute
+    N: ops::Add<Output = N> + Absolute
 {   
     #[inline]
-    fn manhattendst(self) -> <N as std::ops::Add>::Output {
+    fn manhattendst(self) -> N {
         self.0.abs() + self.1.abs()
+    }
+}
+
+impl <N> ManhattenDst<N> for (N, N, N)
+where
+    N: ops::Add<Output = N> + Absolute,
+{   
+    #[inline]
+    fn manhattendst(self) -> N {
+        self.0.abs() + self.1.abs() + self.2.abs()
     }
 }
 
