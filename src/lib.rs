@@ -176,7 +176,7 @@ where
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::{ToNum};
+/// use libaoc::{StrToNum};
 ///
 /// fn main () {
 ///     let s = "1, 2, 3, 4, 5";
@@ -186,7 +186,7 @@ where
 ///     assert_eq!(vec![1, 2, 3, 4, 5, 6], s.lines().to_num().unwrap());
 /// }
 /// ```
-pub trait ToNum<N, S, I>
+pub trait StrToNum<N, S, I>
 where
     N: FromStr,
     S: AsRef<str>,
@@ -195,7 +195,7 @@ where
     fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err>;
 }
 
-impl <N, S, I> ToNum<N, S, I> for I
+impl <N, S, I> StrToNum<N, S, I> for I
 where
     N: FromStr,
     S: AsRef<str>,
@@ -203,6 +203,40 @@ where
 {
     fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err> {
         self.map(|item| item.as_ref().parse()).collect()
+    }
+}
+
+/// Used to convert a stream of T into a Vec of U.
+/// #Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::{ToVec, Position};
+/// fn main() {
+///     let tuple1 = (0, 0);
+///     let tuple2 = (1, 1);
+///     let tuple3 = (2, 2);
+///     
+///     let tuples = vec![tuple1, tuple2, tuple3];
+/// 
+///     let Positions: Vec<Position<usize>> = tuples.into_iter().convert();
+/// 
+///     assert_eq!(vec![Position::new(0, 0), Position::new(1, 1), Position::new(2, 2)], Positions)
+/// }
+pub trait ToVec <T, U, I>
+where
+    U: From<T>,
+    I: Iterator<Item = T>,
+{
+    fn convert(self) -> Vec<U>;
+}
+
+impl <T, U, I> ToVec <T, U, I> for I
+where
+    U: From<T>,
+    I: Iterator<Item = T>,
+{
+    fn convert(self) -> Vec<U> {
+        self.map(|item| U::from(item)).collect()
     }
 }
 
