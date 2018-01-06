@@ -2,11 +2,6 @@ use std::str::FromStr;
 use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
 use std::ops;
-use std::fs::File;
-use std::io::{self, BufReader};
-use std::io::prelude::*;
-use std::path::Path;
-use std::ffi::OsStr;
 
 /// A trait to get the absolute value of a number.
 /// #Examples
@@ -520,52 +515,60 @@ where
     }
 }
 
-/// Opens a file, an reads it to whatever type it was called on.
-/// #Examples
-/// ```
-/// extern crate libaoc;
-/// use libaoc::ReadFile;
-/// fn main() {
-///     let puzzle = match Vec::<u8>::read_file(r"test.txt") {
-///         Ok(content) => content,
-///         Err(_) => Vec::new(),
-///     };
-///     assert_eq!(b"hello! this is a test!"[..], puzzle[..]);
-/// }
-/// ```
-pub trait ReadFile {
-    type Content;
+#[cfg(readfile)]
+pub mod readfile {
+    use std::fs::File;
+    use std::io::{self, BufReader};
+    use std::io::prelude::*;
+    use std::path::Path;
+    use std::ffi::OsStr;
+    /// Opens a file, an reads it to whatever type it was called on.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::ReadFile;
+    /// fn main() {
+    ///     let puzzle = match Vec::<u8>::read_file(r"test.txt") {
+    ///         Ok(content) => content,
+    ///         Err(_) => Vec::new(),
+    ///     };
+    ///     assert_eq!(b"hello! this is a test!"[..], puzzle[..]);
+    /// }
+    /// ```
+    pub trait ReadFile {
+        type Content;
 
-    fn read_file<S: AsRef<OsStr>>(s: S) -> Result<Self::Content, io::Error>;
-}
-
-impl ReadFile for String
-{
-    type Content = String;
-    fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
-        let mut s = String::new();
-        let p: &Path = Path::new(&path);
-        
-        let f = File::open(p)?;
-        let mut bufreader = BufReader::new(f);
-
-        bufreader.read_to_string(&mut s)?;
-        Ok(s)
+        fn read_file<S: AsRef<OsStr>>(s: S) -> Result<Self::Content, io::Error>;
     }
-}
 
-impl <T>ReadFile for Vec<T>
-{
-    type Content = Vec<u8>;
-    fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
-        let mut v: Vec<u8> = Vec::new();
-        let p: &Path = Path::new(&path);
-        
-        let f = File::open(p)?;
-        let mut bufreader = BufReader::new(f);
+    impl ReadFile for String
+    {
+        type Content = String;
+        fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
+            let mut s = String::new();
+            let p: &Path = Path::new(&path);
+            
+            let f = File::open(p)?;
+            let mut bufreader = BufReader::new(f);
 
-        bufreader.read_to_end(&mut v)?;
-        Ok(v)
+            bufreader.read_to_string(&mut s)?;
+            Ok(s)
+        }
+    }
+
+    impl <T>ReadFile for Vec<T>
+    {
+        type Content = Vec<u8>;
+        fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
+            let mut v: Vec<u8> = Vec::new();
+            let p: &Path = Path::new(&path);
+            
+            let f = File::open(p)?;
+            let mut bufreader = BufReader::new(f);
+
+            bufreader.read_to_end(&mut v)?;
+            Ok(v)
+        }
     }
 }
 
