@@ -509,7 +509,7 @@ impl <T>ReadFile for Vec<T>
         let f = File::open(p)?;
         let mut bufreader = BufReader::new(f);
 
-        bufreader.read(&mut v)?;
+        bufreader.read_to_end(&mut v)?;
         Ok(v)
     }
 }
