@@ -3,17 +3,17 @@ use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
 use std::ops;
 
+/// A trait to get the absolute value of a number.
+/// #Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::Absolute;
+/// fn main() {
+///     assert_eq!(10, (-10i32).abs());
+///     assert_eq!(20, 20u32.abs());
+/// }
+/// ```
 pub trait Absolute {
-    /// A function to get the absolute value of a number.
-    /// #Examples
-    /// ```
-    /// extern crate libaoc;
-    /// use libaoc::Absolute;
-    /// fn main() {
-    ///     assert_eq!(10, (-10i32).abs());
-    ///     assert_eq!(20, 20u32.abs());
-    /// }
-    /// ```
     fn abs(self) -> Self;
 }
 
@@ -165,6 +165,22 @@ where
     iter.map(|item| item.as_ref().parse()).collect()
 }
 
+/// Takes any Iterator, where the items are implement AsRef<str>.
+/// Returns a Vec<N>, where N implements FromStr.
+/// Returns an Error if an error occured.
+/// #Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::{ToNum};
+///
+/// fn main () {
+///     let s = "1, 2, 3, 4, 5";
+///     assert_eq!(vec![1, 2, 3, 4, 5], s.split(", ").to_num().unwrap());
+///
+///     let s = String::from("1\n2\n3\n4\n5\n6");
+///     assert_eq!(vec![1, 2, 3, 4, 5, 6], s.lines().to_num().unwrap());
+/// }
+/// ```
 pub trait ToNum<N, S, I>
 where
     N: FromStr,
@@ -180,23 +196,6 @@ where
     S: AsRef<str>,
     I: Iterator<Item = S>,
 {
-    /// Takes any Iterator, where the items are implement AsRef<str>.
-    /// Returns a Vec<N>, where N implements FromStr.
-    /// Returns an Error if an error occured.
-    /// #Examples
-    /// ```
-    /// extern crate libaoc;
-    /// use libaoc::{ToNum};
-    ///
-    /// fn main () {
-    ///     let s = "1, 2, 3, 4, 5";
-    ///     assert_eq!(vec![1, 2, 3, 4, 5], s.split(", ").to_num().unwrap());
-    ///
-    ///     let s = String::from("1\n2\n3\n4\n5\n6");
-    ///     assert_eq!(vec![1, 2, 3, 4, 5, 6], s.lines().to_num().unwrap());
-    /// }
-    /// ```
-
     fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err> {
         self.map(|item| item.as_ref().parse()).collect()
     }
