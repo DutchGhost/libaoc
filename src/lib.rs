@@ -208,6 +208,9 @@ where
 
 /// An enum to reprisent a direction.
 /// Is great to use in maps, or when 'following' some kind of line.
+/// Also supports an init variant.
+/// When using [turn_right](enum.Direction.html#method.turn_right) , Direction::Right is returned.
+/// When using [turn_left](enum.Direction.html#method.turn_left) , Direction::Left is returned.
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 pub enum Direction {
     Up,
@@ -328,6 +331,7 @@ where
 
     /// Changes the position with `steps` based on the direction.
     /// If the direction is facing down, y is incremented, if the direction if facing up, y is decremented.
+    /// If the direction is Direction::Init, no update is made.
     /// changes the position by `steps`.
     /// #Examples
     /// ```
@@ -391,8 +395,10 @@ where
         self.x -= steps;
     }
 
+    /// Returns a reference to the current x value.
     pub fn x_val<'a, 's: 'a>(&'s self) -> &'a N {&self.x}
 
+    /// Returns a reference to the current y value.
     pub fn y_val<'a, 's: 'a>(&'s self) -> &'a N {&self.y}
 }
 
