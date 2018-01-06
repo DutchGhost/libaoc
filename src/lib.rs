@@ -515,7 +515,7 @@ where
     }
 }
 
-#[cfg(readfile)]
+#[cfg(feature = "readfile")]
 pub mod readfile {
     use std::fs::File;
     use std::io::{self, BufReader};
