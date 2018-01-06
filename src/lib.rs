@@ -546,3 +546,30 @@ macro_rules! mul {
 macro_rules! rem {
     ($tup:tt) => (apply!(%, $tup))
 }
+
+/// This macro is used to generate `noop` functions.
+/// Works only on tuples, but is great to use in functional programming when you just need to pass a `noop` function into another function.
+/// #Examples
+/// ```
+/// #[macro_use]
+/// extern crate libaoc;
+/// fn main() {
+///     let f = noop!(&mut (i64, i64));
+///     assert_eq!((10, 10), take_func(f, (10, 10)));
+///     let real_func = |n: &mut (i64, i64)| {n.0 += 1; n.1 += 2;};
+///     assert_eq!((11, 12), take_func(real_func, (10, 10))); 
+/// }
+/// fn take_func<F>(f: F, mut n: (i64, i64)) -> (i64, i64)
+/// where
+///     F: Fn(&mut (i64, i64))
+/// {
+///     f(&mut n);
+///     n
+/// }
+/// ```
+#[macro_export]
+macro_rules! noop {
+    ($type:ty) => {
+        |_: $type| {}
+    };
+}
