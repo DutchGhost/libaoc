@@ -362,7 +362,7 @@ where
 
 impl<N> Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N>
 {
     /// Returns a new Position.
     #[inline]
@@ -475,6 +475,55 @@ where
     pub fn get_ref(&self) -> (&N, &N) {
         (&self.x, &self.y)
     }
+
+    /// Clones x and y into a tuple
+    #[inline]
+    pub fn clone_to_tup(&self) -> (N, N)
+    where
+        N: Clone,
+    {
+        self.clone().into()
+    }
+
+    /// Copies x and y into a tuple.
+    #[inline]
+    pub fn copy_to_tup(&self) -> (N, N)
+    where
+        N: Clone + Copy,
+    {
+        (self.x, self.y)
+    }
+
+    /// Returns the difference in coordinates between 2 Positions.
+    /// Requires Clone, because of how the function `abs()` in the Trait `Absolute` works.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::{Position, Absolute};
+    /// fn main() {
+    ///     let p1 = Position::new(4, 4);
+    ///     let p2 = Position::new(6, 5);
+    /// 
+    ///     assert_eq!(p1.diff_copy(&p2), (2, 1));
+    /// }
+    /// ```
+    #[inline]
+    pub fn diff_clone(&self, other: &Position<N>) -> (N, N)
+    where
+        N: Clone + Absolute
+    {
+        ((self.x.clone() - other.x.clone()).abs(), (self.y.clone() - other.y.clone()).abs())
+    }
+
+    /// Returns the difference in coordinates between 2 Positions.
+    /// Requires Clone and Copy, because of how the function `abs()` in the Trait `Absolute` works.
+    #[inline]
+    pub fn diff_copy(&self, other: &Position<N>) -> (N, N)
+    where
+        N: Clone + Copy + Absolute
+    {
+        ((self.x - other.x).abs(), (self.y - other.y).abs())
+    }
 }
 
 impl<N> Display for Position<N>
@@ -509,7 +558,6 @@ where
         (self.x, self.y)
     }
 }
-
 /// Returns the manhatten distance of any Position with type N.
 /// A position is either a tuple, or the struct [Position](struct.Position.html).
 /// the manhatten distance is the sum of the absolute values of a coordinate.
