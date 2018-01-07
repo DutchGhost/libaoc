@@ -464,11 +464,17 @@ where
 
     /// Returns a reference to the current x value.
     #[inline]
-    pub fn x_val<'a, 's: 'a>(&'s self) -> &'a N { &self.x }
+    pub fn x_val(&self) -> &N { &self.x }
 
     /// Returns a reference to the current y value.
     #[inline]
-    pub fn y_val<'a, 's: 'a>(&'s self) -> &'a N { &self.y }
+    pub fn y_val(&self) -> &N { &self.y }
+
+    /// Returns a tuple of &x, &y.
+    #[inline]
+    pub fn get_ref(&self) -> (&N, &N) {
+        (&self.x, &self.y)
+    }
 }
 
 impl<N> Display for Position<N>
