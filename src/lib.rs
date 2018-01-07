@@ -476,7 +476,7 @@ where
         (&self.x, &self.y)
     }
 
-    /// Clones x and y into a tuple
+    /// Clones x and y into a tuple.
     #[inline]
     pub fn clone_to_tup(&self) -> (N, N)
     where
@@ -495,7 +495,7 @@ where
     }
 
     /// Returns the difference in coordinates between 2 Positions.
-    /// Requires Clone, because of how the function `abs()` in the Trait `Absolute` works.
+    /// Requires Clone and Copy, because the function [`abs()`](trait.Absolute.html#tymethod.abs) in the Trait [`Absolute`](trait.Absolute.html) takes `self`.
     /// #Examples
     /// ```
     /// extern crate libaoc;
@@ -516,7 +516,7 @@ where
     }
 
     /// Returns the difference in coordinates between 2 Positions.
-    /// Requires Clone and Copy, because of how the function `abs()` in the Trait `Absolute` works.
+    /// Requires Clone and Copy, because the function [`abs()`](trait.Absolute.html#tymethod.abs) in the Trait [`Absolute`](trait.Absolute.html) takes `self`.
     #[inline]
     pub fn diff_copy(&self, other: &Position<N>) -> (N, N)
     where
