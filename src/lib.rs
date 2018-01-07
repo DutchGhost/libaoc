@@ -491,7 +491,7 @@ where
     where
         N: Clone + Copy,
     {
-        (self.x, self.y)
+        (*self).into()
     }
 
     /// Returns the difference in coordinates between 2 Positions.
