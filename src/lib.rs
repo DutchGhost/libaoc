@@ -504,13 +504,13 @@ where
     N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Absolute
 {
     fn abs(self) -> Self {
-        Position {x: self.x.abs(), y: self.y.abs()}
+        Position {x: self.x.abs(), y: self.y.abs() }
     }
 }
 
 impl <N> ops::Sub for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N>
 {
     type Output = Position<N>;
 
