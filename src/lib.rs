@@ -461,9 +461,11 @@ where
     }
 
     /// Returns a reference to the current x value.
+    #[inline]
     pub fn x_val<'a, 's: 'a>(&'s self) -> &'a N { &self.x }
 
     /// Returns a reference to the current y value.
+    #[inline]
     pub fn y_val<'a, 's: 'a>(&'s self) -> &'a N { &self.y }
 }
 
