@@ -239,11 +239,16 @@ where
     }
 }
 
-/// An enum to reprisent a direction.
+/// An enum to represent a direction.
 /// Is great to use in maps, or when 'following' some kind of line.
 /// Also supports an init variant.
-/// When using [turn_right](enum.Direction.html#method.turn_right) , Direction::Right is returned.
-/// When using [turn_left](enum.Direction.html#method.turn_left) , Direction::Left is returned.
+/// When the current variant is [`init`], using [`turn_right`] returns the variant [`right`].
+/// When the current variant is [`init`], using [`turn_left`] returns the variant [`left`].
+/// [`turn_right`]: enum.Direction.html#method.turn_right
+/// [`turn_left`]: enum.Direction.html#method.turn_left
+/// [`init`]: enum.Direction.html#variant.Init
+/// [`right`]: enum.Direction.html#variant.Right
+/// [`left`]: enum.Direction.html#variant.Left
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 pub enum Direction {
     Up,
