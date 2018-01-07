@@ -338,7 +338,7 @@ impl Display for Direction {
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::{Position, ManhattenDst};
+/// use libaoc::{Position, ManhattenDst, Absolute};
 /// 
 /// fn main() {
 ///     let tup = (-10i32, 21i32);
@@ -349,6 +349,19 @@ impl Display for Direction {
 ///     let position = Position::new(10u16, 1u16);
 ///     
 ///     assert_eq!(Position::from(tuple), position);
+/// 
+///     let p1 = Position::new(10, 20);
+///     let p2 = Position::new(20, 30);
+/// 
+///     assert_eq!(Position::new(10, 10), p2 - p1);
+/// 
+///     let rp1 = &Position::new(10, 20);
+///     let p2 = Position::new(-20, 30);
+///     
+///     let p3 = p2 - p1;
+///     assert_eq!(Position::new(-30, 10), p3);
+///     
+///     assert_eq!(Position::new(30, 10), p3.abs());
 /// }
 /// ```
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
@@ -478,53 +491,80 @@ where
 
     /// Clones x and y into a tuple.
     #[inline]
-    pub fn clone_to_tup(&self) -> (N, N)
+    pub fn to_tuple(&self) -> (N, N)
     where
         N: Clone,
     {
         self.clone().into()
     }
+}
 
-    /// Copies x and y into a tuple.
-    #[inline]
-    pub fn copy_to_tup(&self) -> (N, N)
-    where
-        N: Clone + Copy,
-    {
-        (*self).into()
-    }
-
-    /// Returns the difference in coordinates between 2 Positions.
-    /// Requires Clone, because the function [`abs()`](trait.Absolute.html#tymethod.abs) in the Trait [`Absolute`](trait.Absolute.html) takes `self`.
-    /// #Examples
-    /// ```
-    /// extern crate libaoc;
-    /// use libaoc::{Position, Absolute};
-    /// fn main() {
-    ///     let p1 = Position::new(4, 4);
-    ///     let p2 = Position::new(6, 5);
-    /// 
-    ///     assert_eq!(p1.diff_copy(&p2), (2, 1));
-    /// }
-    /// ```
-    #[inline]
-    pub fn diff_clone(&self, other: &Position<N>) -> (N, N)
-    where
-        N: Clone + Absolute
-    {
-        ((self.x.clone() - other.x.clone()).abs(), (self.y.clone() - other.y.clone()).abs())
-    }
-
-    /// Returns the difference in coordinates between 2 Positions.
-    /// Requires Clone and Copy, because the function [`abs()`](trait.Absolute.html#tymethod.abs) in the Trait [`Absolute`](trait.Absolute.html) takes `self`.
-    #[inline]
-    pub fn diff_copy(&self, other: &Position<N>) -> (N, N)
-    where
-        N: Clone + Copy + Absolute
-    {
-        ((self.x - other.x).abs(), (self.y - other.y).abs())
+impl <N> Absolute for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Absolute
+{
+    fn abs(self) -> Self {
+        Position {x: self.x.abs(), y: self.y.abs()}
     }
 }
+
+impl <N> ops::Sub for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
+{
+    type Output = Position<N>;
+
+    #[inline]
+    fn sub(self, other: Position<N>) -> Self::Output {
+        Position{ x: self.x - other.x, y: self.y - other.y }
+    }
+}
+
+impl <'a, 'b, N> ops::Sub<&'b Position<N>> for &'a Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
+{
+    type Output = Position<N>;
+
+    #[inline]
+    fn sub(self, other: &'b Position<N>) -> Self::Output {
+        Position { x: self.x.clone() - other.x.clone(), y: self.y.clone() - other.y.clone() }
+    }
+}
+
+impl <'a, N> ops::Sub<&'a Position<N>> for Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
+{
+    type Output = Position<N>;
+
+    #[inline]
+    fn sub(self, other: &'a Position<N>) -> Self::Output {
+        Position { x: self.x - other.x.clone(), y: self.y - other.y.clone() }
+    }
+}
+
+impl <'a, N> ops::Sub<Position<N>> for &'a Position<N>
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
+{
+    type Output = Position<N>;
+
+    #[inline]
+    fn sub(self, other: Position<N>) -> Self::Output {
+        Position{ x: self.x.clone() - other.x, y: self.y.clone() - other.y }
+    }
+}
+
+impl <N> Absolute for (N, N)
+where
+    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Absolute
+{
+    fn abs(self) -> Self {
+        (self.0.abs(), self.1.abs())
+    }
+}
+
 
 impl<N> Display for Position<N>
 where
