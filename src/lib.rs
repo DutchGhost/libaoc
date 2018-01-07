@@ -568,11 +568,17 @@ pub mod readfile {
     use std::io::prelude::*;
     use std::path::Path;
     use std::ffi::OsStr;
+
+    fn into_buf_reader<S: AsRef<OsStr>>(s: S) -> Result<BufReader<File>, io::Error> {
+        let path: &Path = Path::new(s.as_ref());            
+        let f = File::open(path)?;
+        Ok(BufReader::new(f))
+    }
     /// Opens a file, an reads it to whatever type it was called on.
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::ReadFile;
+    /// use libaoc::readfile::ReadFile;
     /// fn main() {
     ///     let puzzle = match Vec::<u8>::read_file(r"test.txt") {
     ///         Ok(content) => content,
@@ -592,11 +598,7 @@ pub mod readfile {
         type Content = String;
         fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
             let mut s = String::new();
-            let p: &Path = Path::new(&path);
-            
-            let f = File::open(p)?;
-            let mut bufreader = BufReader::new(f);
-
+            let mut bufreader = into_buf_reader(path)?;
             bufreader.read_to_string(&mut s)?;
             Ok(s)
         }
@@ -607,11 +609,7 @@ pub mod readfile {
         type Content = Vec<u8>;
         fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
             let mut v: Vec<u8> = Vec::new();
-            let p: &Path = Path::new(&path);
-            
-            let f = File::open(p)?;
-            let mut bufreader = BufReader::new(f);
-
+            let mut bufreader = into_buf_reader(path)?;
             bufreader.read_to_end(&mut v)?;
             Ok(v)
         }
