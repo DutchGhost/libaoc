@@ -495,7 +495,7 @@ where
     }
 
     /// Returns the difference in coordinates between 2 Positions.
-    /// Requires Clone and Copy, because the function [`abs()`](trait.Absolute.html#tymethod.abs) in the Trait [`Absolute`](trait.Absolute.html) takes `self`.
+    /// Requires Clone, because the function [`abs()`](trait.Absolute.html#tymethod.abs) in the Trait [`Absolute`](trait.Absolute.html) takes `self`.
     /// #Examples
     /// ```
     /// extern crate libaoc;
