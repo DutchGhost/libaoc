@@ -133,12 +133,12 @@ where
 {   
     #[inline]
     fn minmax(self) -> Self {
-        if self.0 < self.1 { (self.0, self.1) } else { (self.1, self.0) }
+        if self.0 < self.1 { self } else { (self.1, self.0) }
     }
 
     #[inline]
     fn maxmin(self) -> Self {
-        if self.0 > self.1 { (self.0, self.1) } else { (self.1, self.0) }
+        if self.0 > self.1 { self } else { (self.1, self.0) }
     }
 }
 
