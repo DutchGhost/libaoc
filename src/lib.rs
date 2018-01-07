@@ -220,6 +220,7 @@ where
 /// 
 ///     assert_eq!(vec![Position::new(0, 0), Position::new(1, 1), Position::new(2, 2)], Positions)
 /// }
+/// ```
 pub trait ToVec <T, U, I>
 where
     U: From<T>,
