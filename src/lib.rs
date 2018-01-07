@@ -130,10 +130,13 @@ where T: Ord
 impl <T> MinMax<T> for (T, T)
 where
     T: Ord
-{
+{   
+    #[inline]
     fn minmax(self) -> Self {
         if self.0 < self.1 { (self.0, self.1) } else { (self.1, self.0) }
     }
+
+    #[inline]
     fn maxmin(self) -> Self {
         if self.0 > self.1 { (self.0, self.1) } else { (self.1, self.0) }
     }
@@ -354,27 +357,30 @@ where
     N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>
 {
     /// Returns a new Position.
+    #[inline]
     pub fn new(x: N, y: N) -> Position<N> {
         Position { x: x, y: y }
     }
 
     /// Changes the position with `steps` based on the direction.
-    /// If the direction is facing down, y is incremented, if the direction if facing up, y is decremented.
-    /// If the direction is Direction::Init, no update is made.
-    /// changes the position by `steps`.
+    /// If the direction is facing down, `y` is incremented, if the direction if facing up, `y` is decremented.
+    /// If the direction is [`Direction::Init`], no update is made.
     /// #Examples
     /// ```
     /// extern crate libaoc;
     /// use libaoc::{Direction, Position};
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
-    ///     let dir = Direction::init_left();
+    ///     let dir = Direction::init_up();
     ///     
     ///     pos.change(&dir, 1);
     /// 
-    ///     let otherpos = Position::new(-1, 0);
+    ///     let otherpos = Position::new(0, -1);
     ///     assert_eq!(pos, otherpos);
     /// }
+    /// ```
+    /// 
+    /// [`Direction::Init`]: enum.Direction.html#variant.Init
     #[inline]
     pub fn change(&mut self, direction: &Direction, steps: N) {
         match direction {
@@ -386,8 +392,35 @@ where
         }
     }
 
+    /// Same as [`change`], but now increments `y` when facing upwards, and decrements `y` when facing downwards.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::{Direction, Position};
+    /// fn main() {
+    ///     let mut pos = Position::new(0, 0);
+    ///     let dir = Direction::init_up();
+    ///     
+    ///     pos.rev_change(&dir, 1);
+    /// 
+    ///     let otherpos = Position::new(0, 1);
+    ///     assert_eq!(pos, otherpos);
+    /// }
+    /// ```
+    /// 
+    /// [`change`]: #method.change
+    #[inline]
+    pub fn rev_change(&mut self, direction: &Direction, steps: N) {
+        match direction {
+            &Direction::Up => self.y += steps,
+            &Direction::Down => self.y -= steps,
+            &Direction::Right => self.x += steps,
+            &Direction::Left => self.x -= steps,
+            &Direction::Init => return,
+        }
+    }
+
     /// Adds `steps` to y.
-    /// see [decrement_y](struct.Position.html#method.decrement_y), [increment_x](struct.Position.html#method.increment_x), [decrement_x](struct.Position.html#method.decrement_x)
     /// #Examples
     /// ```
     /// extern crate libaoc;
@@ -404,31 +437,28 @@ where
     }
 
     /// Subtracts `steps` from y.
-    /// see [increment_y](struct.Position.html#method.increment_y), [increment_x](struct.Position.html#method.increment_x), [decrement_x](struct.Position.html#method.decrement_x)
     #[inline]
     pub fn decrement_y(&mut self, steps: N) {
         self.y -= steps;
     }
 
     /// Adds `steps` to x.
-    /// see [increment_y](struct.Position.html#method.increment_y), [decrement_y](struct.Position.html#method.decrement_y), [decrement_x](struct.Position.html#method.decrement_x)
     #[inline]
     pub fn increment_x(&mut self, steps: N) {
         self.x += steps;
     }
 
     /// Subtracts `steps` from x.
-    /// see [increment_y](struct.Position.html#method.increment_y), [decrement_y](struct.Position.html#method.decrement_y), [increment_x](struct.Position.html#method.increment_x)
     #[inline]
     pub fn decrement_x(&mut self, steps: N) {
         self.x -= steps;
     }
 
     /// Returns a reference to the current x value.
-    pub fn x_val<'a, 's: 'a>(&'s self) -> &'a N {&self.x}
+    pub fn x_val<'a, 's: 'a>(&'s self) -> &'a N { &self.x }
 
     /// Returns a reference to the current y value.
-    pub fn y_val<'a, 's: 'a>(&'s self) -> &'a N {&self.y}
+    pub fn y_val<'a, 's: 'a>(&'s self) -> &'a N { &self.y }
 }
 
 impl<N> Display for Position<N>
@@ -465,7 +495,7 @@ where
 }
 
 /// Returns the manhatten distance of any Position with type N.
-/// A position is either a tuple, or the struct itself see [Position](struct.Position.html).
+/// A position is either a tuple, or the struct [Position](struct.Position.html).
 /// the manhatten distance is the sum of the absolute values of a coordinate.
 ///
 /// #Examples
