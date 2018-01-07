@@ -314,6 +314,8 @@ impl Direction {
     }
 
     /// Reverses the current direction.
+    /// #Panic
+    /// Panics whenever the current direction is [`Init`](enum.Direction.html#variant.Init).
     #[inline]
     pub fn reverse(self) -> Direction {
         match self {
