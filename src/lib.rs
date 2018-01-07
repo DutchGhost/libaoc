@@ -464,11 +464,11 @@ where
 
     /// Returns a reference to the current x value.
     #[inline]
-    pub fn x_val(&self) -> &N { &self.x }
+    pub fn get_ref_x(&self) -> &N { &self.x }
 
     /// Returns a reference to the current y value.
     #[inline]
-    pub fn y_val(&self) -> &N { &self.y }
+    pub fn get_ref_y(&self) -> &N { &self.y }
 
     /// Returns a tuple of &x, &y.
     #[inline]
