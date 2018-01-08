@@ -501,19 +501,33 @@ where
         }
     }
 
+    /// Check whether self and `other` are adjecent. That is, if the x and y after subtracting `self` from `other`
+    /// are either (0, 1), (0, -1), (1, -1), (1, 0), (1, 1), (-1, -1), (-1, 0) or (-1, 1).
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::Position;
+    /// fn main() {
+    ///     let pos1 = Position::new(5, 6);
+    ///     let pos2 = Position::new(6, 7);
+    /// 
+    ///     assert_eq!(true, pos1.is_adjecent(&pos2));
+    ///     assert_eq!(true, pos2.is_adjecent(&pos1));
+    /// }
+    #[inline]
     pub fn is_adjecent<'a, 'b>(&'a self, other: &'b Position<N>) -> bool
     where
-        N: Sub
+        N: Sub<Output = N> + Clone + From<i8> + PartialEq
     {
-        match self - other {
-            Position { x: 0, y: 1} => true,
-            Position { x: 0, y: -1} => true,
-            Position { x: 1, y: 1} => true,
-            Position { x: 1, y: 0} => true,
-            Position { x: 1, y: -1} => true,
-            Position { x: -1, y: 1} => true,
-            Position { x: -1, y: 0} => true,
-            Position { x: -1, y: -1} => true,
+        match self.sub(other) {
+            Position {ref x, ref y} if x == &N::from(0) && y == &N::from(1) => true,
+            Position {ref x, ref y} if x == &N::from(0) && y == &N::from(-1) => true,
+            Position {ref x, ref y} if x == &N::from(1) && y == &N::from(1) => true,
+            Position {ref x, ref y} if x == &N::from(1) && y == &N::from(0) => true,
+            Position {ref x, ref y} if x == &N::from(1) && y == &N::from(-1) => true,
+            Position {ref x, ref y} if x == &N::from(-1) && y == &N::from(1) => true,
+            Position {ref x, ref y} if x == &N::from(-1) && y == &N::from(0) => true,
+            Position {ref x, ref y} if x == &N::from(-1) && y == &N::from(-1) => true,
             _ => false,
         }
     }
