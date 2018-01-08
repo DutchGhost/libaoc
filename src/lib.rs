@@ -574,6 +574,7 @@ impl <N> Absolute for (N, N)
 where
     N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
 {
+    #[inline]
     fn abs(self) -> Self {
         (self.0.abs(), self.1.abs())
     }
