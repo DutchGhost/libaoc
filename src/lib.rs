@@ -530,7 +530,7 @@ where
     where
         N: Sub<Output = N> + Clone + From<i8> + PartialEq
     {
-        match self.sub(other) {
+        match self - other {
             Position {ref x, ref y} if x == &N::from(0) && y == &N::from(1) => true,
             Position {ref x, ref y} if x == &N::from(0) && y == &N::from(-1) => true,
             Position {ref x, ref y} if x == &N::from(1) && y == &N::from(1) => true,
