@@ -74,7 +74,11 @@ u_absolute!(usize);
 /// ```
 #[inline]
 pub fn sort_biggest<T: Ord>(a: T, b: T) -> (T, T) {
-    if a > b { (a, b) } else { (b, a) }
+    if a > b {
+        (a, b)
+    } else {
+        (b, a)
+    }
 }
 
 /// Returns a tuple, sorted by the min value.
@@ -98,7 +102,11 @@ pub fn sort_biggest<T: Ord>(a: T, b: T) -> (T, T) {
 /// ```
 #[inline]
 pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
-    if a > b { (b, a) } else { (a, b) }
+    if a > b {
+        (b, a)
+    } else {
+        (a, b)
+    }
 }
 
 /// 2 functions to 'sort' a tuple.
@@ -110,35 +118,44 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 /// fn main() {
 ///     let mut tup = (20, 10);
 ///     let mutborrow = &mut tup;
-///     
+///
 ///     assert_eq!((10, 20), mutborrow.minmax());
-/// 
+///
 ///     let mut a = 1;
 ///     let mut b = 2;
 ///     let t = (&mut a, &mut b);
-/// 
+///
 ///     assert_eq!((&mut 2, &mut 1), t.maxmin());
 /// }
 /// ```
 pub trait MinMax<T>
-where T: Ord
-{   
+where
+    T: Ord,
+{
     fn minmax(self) -> Self;
     fn maxmin(self) -> Self;
 }
 
-impl <T> MinMax<T> for (T, T)
+impl<T> MinMax<T> for (T, T)
 where
-    T: Ord
-{   
+    T: Ord,
+{
     #[inline]
     fn minmax(self) -> Self {
-        if self.0 < self.1 { self } else { (self.1, self.0) }
+        if self.0 < self.1 {
+            self
+        } else {
+            (self.1, self.0)
+        }
     }
 
     #[inline]
     fn maxmin(self) -> Self {
-        if self.0 > self.1 { self } else { (self.1, self.0) }
+        if self.0 > self.1 {
+            self
+        } else {
+            (self.1, self.0)
+        }
     }
 }
 
@@ -193,7 +210,7 @@ where
     fn to_num(self) -> Result<Vec<N>, <N as FromStr>::Err>;
 }
 
-impl <N, S, I> StrToNum<N, S, I> for I
+impl<N, S, I> StrToNum<N, S, I> for I
 where
     N: FromStr,
     S: AsRef<str>,
@@ -213,15 +230,15 @@ where
 ///     let tuple1 = (0, 0);
 ///     let tuple2 = (1, 1);
 ///     let tuple3 = (2, 2);
-///     
+///
 ///     let tuples = vec![tuple1, tuple2, tuple3];
-/// 
+///
 ///     let Positions: Vec<Position<usize>> = tuples.into_iter().convert();
-/// 
+///
 ///     assert_eq!(vec![Position::new(0, 0), Position::new(1, 1), Position::new(2, 2)], Positions)
 /// }
 /// ```
-pub trait ToVec <T, U, I>
+pub trait ToVec<T, U, I>
 where
     U: From<T>,
     I: Iterator<Item = T>,
@@ -229,7 +246,7 @@ where
     fn convert(self) -> Vec<U>;
 }
 
-impl <T, U, I> ToVec <T, U, I> for I
+impl<T, U, I> ToVec<T, U, I> for I
 where
     U: From<T>,
     I: Iterator<Item = T>,
@@ -339,43 +356,41 @@ impl Display for Direction {
 /// ```
 /// extern crate libaoc;
 /// use libaoc::{Position, ManhattenDst, Absolute};
-/// 
+///
 /// fn main() {
 ///     let tup = (-10i32, 21i32);
 ///     let pos = Position::new(-10i32, 21i32);
 ///     assert_eq!(Position::from(tup), pos);
-///     
+///
 ///     let tuple = (10u16, 1u16);
 ///     let position = Position::new(10u16, 1u16);
-///     
+///
 ///     assert_eq!(Position::from(tuple), position);
-/// 
+///
 ///     let p1 = Position::new(10, 20);
 ///     let p2 = Position::new(20, 30);
-/// 
+///
 ///     assert_eq!(Position::new(10, 10), p2 - p1);
-/// 
+///
 ///     let rp1 = &Position::new(10, 20);
 ///     let otherp2 = Position::new(-20, 30);
-///     
+///
 ///     let p3 = otherp2 - rp1;
 ///     assert_eq!(Position::new(-30, 10), p3);
-///     
+///
 ///     assert_eq!(Position::new(30, 10), p3.abs());
-/// 
+///
 ///     assert_eq!(Position::new(-10, 40), p3 + p2);
 /// }
 /// ```
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
-pub struct Position<N>
-where
-{
+pub struct Position<N> {
     x: N,
     y: N,
 }
 macro_rules! binops {
     (impl $imp:ident, $method:ident for $pos:ident, $oper:tt) => {
-        
+
         // impl Imp<pos<N>> for pos<N>. Does Not require Clone, because the value is owned.
         impl<N> $imp<$pos<N>> for $pos<N>
         where
@@ -435,7 +450,7 @@ binops!(impl Sub, sub for Position, -);
 
 impl<N> Position<N>
 where
-    N: AddAssign<N> + SubAssign<N>
+    N: AddAssign<N> + SubAssign<N>,
 {
     /// Returns a new Position.
     #[inline]
@@ -453,14 +468,14 @@ where
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     let dir = Direction::init_up();
-    ///     
+    ///
     ///     pos.change(&dir, 1);
-    /// 
+    ///
     ///     let otherpos = Position::new(0, -1);
     ///     assert_eq!(pos, otherpos);
     /// }
     /// ```
-    /// 
+    ///
     /// [`Direction::Init`]: enum.Direction.html#variant.Init
     #[inline]
     pub fn change(&mut self, direction: &Direction, steps: N) {
@@ -481,14 +496,14 @@ where
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     let dir = Direction::init_up();
-    ///     
+    ///
     ///     pos.rev_change(&dir, 1);
-    /// 
+    ///
     ///     let otherpos = Position::new(0, 1);
     ///     assert_eq!(pos, otherpos);
     /// }
     /// ```
-    /// 
+    ///
     /// [`change`]: #method.change
     #[inline]
     pub fn rev_change(&mut self, direction: &Direction, steps: N) {
@@ -510,17 +525,17 @@ where
     /// fn main() {
     ///     let pos1 = Position::new(5, 6);
     ///     let pos2 = Position::new(6, 7);
-    ///     
-    /// 
+    ///
+    ///
     ///     assert_eq!(true, pos1.is_adjecent(&pos2));
     ///     assert_eq!(true, pos2.is_adjecent(&pos1));
-    ///     
+    ///
     ///     let pos3 = Position::new(-1, 0);
     ///     let pos4 = Position::new(0, 0);
-    /// 
+    ///
     ///     assert_eq!(true, pos3.is_adjecent(&pos4));
     ///     assert_eq!(true, pos4.is_adjecent(&pos3));
-    /// 
+    ///
     ///     assert_eq!(false, pos4.is_adjecent(&pos4));
     ///     assert_eq!(false, pos3.is_adjecent(&pos1));
     /// }
@@ -528,12 +543,12 @@ where
     #[inline]
     pub fn is_adjecent<'a, 'b>(&'a self, other: &'b Position<N>) -> bool
     where
-        N: Sub<Output = N> + Clone + From<i8> + PartialEq + Absolute
+        N: Sub<Output = N> + Clone + From<i8> + PartialEq + Absolute,
     {
         match (self - other).abs() {
-            Position {ref x, ref y} if x == &N::from(0) && y == &N::from(1) => true,
-            Position {ref x, ref y} if x == &N::from(1) && y == &N::from(0) => true,
-            Position {ref x, ref y} if x == &N::from(1) && y == &N::from(1) => true,
+            Position { ref x, ref y } if x == &N::from(0) && y == &N::from(1) => true,
+            Position { ref x, ref y } if x == &N::from(1) && y == &N::from(0) => true,
+            Position { ref x, ref y } if x == &N::from(1) && y == &N::from(1) => true,
             _ => false,
         }
     }
@@ -574,11 +589,15 @@ where
 
     /// Returns a reference to the current x value.
     #[inline]
-    pub fn get_ref_x(&self) -> &N { &self.x }
+    pub fn get_ref_x(&self) -> &N {
+        &self.x
+    }
 
     /// Returns a reference to the current y value.
     #[inline]
-    pub fn get_ref_y(&self) -> &N { &self.y }
+    pub fn get_ref_y(&self) -> &N {
+        &self.y
+    }
 
     /// Returns a tuple of &x, &y.
     #[inline]
@@ -596,39 +615,37 @@ where
     }
 }
 
-impl <N: Absolute> Absolute for Position<N>
-{
+impl<N: Absolute> Absolute for Position<N> {
     #[inline]
     fn abs(self) -> Self {
-        Position {x: self.x.abs(), y: self.y.abs() }
+        Position {
+            x: self.x.abs(),
+            y: self.y.abs(),
+        }
     }
 }
 
-impl<N: fmt::Display> Display for Position<N>
-{
+impl<N: fmt::Display> Display for Position<N> {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(f, "({}, {})", self.x, self.y)
     }
 }
 
-impl <N>From<(N, N)> for Position<N>
-{
+impl<N> From<(N, N)> for Position<N> {
     #[inline]
     fn from((n1, n2): (N, N)) -> Position<N> {
-        Position {x: n1, y: n2}
+        Position { x: n1, y: n2 }
     }
 }
 
-impl<N> Into<(N, N)> for Position<N>
-{
+impl<N> Into<(N, N)> for Position<N> {
     #[inline]
     fn into(self) -> (N, N) {
         (self.x, self.y)
     }
 }
 
-impl <N: Absolute> Absolute for (N, N)
-{
+impl<N: Absolute> Absolute for (N, N) {
     #[inline]
     fn abs(self) -> Self {
         (self.0.abs(), self.1.abs())
@@ -643,7 +660,7 @@ impl <N: Absolute> Absolute for (N, N)
 /// ```
 /// extern crate libaoc;
 /// use libaoc::{ManhattenDst, Position};
-/// 
+///
 /// fn main() {
 ///     let pos = Position::new(-1, 11i16);
 ///     assert_eq!(12, pos.manhattendst());
@@ -656,9 +673,9 @@ where
     fn manhattendst(self) -> N;
 }
 
-impl <N> ManhattenDst<N> for Position<N>
+impl<N> ManhattenDst<N> for Position<N>
 where
-    N: Add<Output = N> + Absolute
+    N: Add<Output = N> + Absolute,
 {
     #[inline]
     fn manhattendst(self) -> N {
@@ -666,20 +683,20 @@ where
     }
 }
 
-impl <N> ManhattenDst<N> for (N, N)
+impl<N> ManhattenDst<N> for (N, N)
 where
-    N: Add<Output = N> + Absolute
-{   
+    N: Add<Output = N> + Absolute,
+{
     #[inline]
     fn manhattendst(self) -> N {
         self.0.abs() + self.1.abs()
     }
 }
 
-impl <N> ManhattenDst<N> for (N, N, N)
+impl<N> ManhattenDst<N> for (N, N, N)
 where
     N: Add<Output = N> + Absolute,
-{   
+{
     #[inline]
     fn manhattendst(self) -> N {
         self.0.abs() + self.1.abs() + self.2.abs()
@@ -695,7 +712,7 @@ pub mod readfile {
     use std::ffi::OsStr;
 
     fn into_buf_reader<S: AsRef<OsStr>>(s: S) -> Result<BufReader<File>, io::Error> {
-        let path: &Path = Path::new(s.as_ref());            
+        let path: &Path = Path::new(s.as_ref());
         let f = File::open(path)?;
         Ok(BufReader::new(f))
     }
@@ -718,8 +735,7 @@ pub mod readfile {
         fn read_file<S: AsRef<OsStr>>(s: S) -> Result<Self::Content, io::Error>;
     }
 
-    impl ReadFile for String
-    {
+    impl ReadFile for String {
         type Content = String;
         fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
             let mut s = String::new();
@@ -729,8 +745,7 @@ pub mod readfile {
         }
     }
 
-    impl <T>ReadFile for Vec<T>
-    {
+    impl<T> ReadFile for Vec<T> {
         type Content = Vec<u8>;
         fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
             let mut v: Vec<u8> = Vec::new();
@@ -746,7 +761,7 @@ pub mod readfile {
 /// ```
 /// #[macro_use(apply)]
 /// extern crate libaoc;
-/// 
+///
 /// fn main() {
 ///     assert_eq!(10, apply!(+, (5, 4, 1)));
 ///     assert_eq!(0, apply!(-, (5, 4, 1)));
@@ -762,7 +777,7 @@ macro_rules! apply {
 /// ```
 /// #[macro_use(sub, apply)]
 /// extern crate libaoc;
-/// 
+///
 /// fn main() {
 ///     assert_eq!(0, sub!((5, 4, 1)));
 /// }
@@ -776,7 +791,7 @@ macro_rules! sub {
 /// ```
 /// #[macro_use(add, apply)]
 /// extern crate libaoc;
-/// 
+///
 /// fn main() {
 ///     assert_eq!(10, add!((5, 4, 1)));
 /// }
@@ -790,7 +805,7 @@ macro_rules! add {
 /// ```
 /// #[macro_use(div, apply)]
 /// extern crate libaoc;
-/// 
+///
 /// fn main() {
 ///     assert_eq!(2, div!((8, 4, 1)));
 /// }
@@ -804,7 +819,7 @@ macro_rules! div {
 /// ```
 /// #[macro_use(mul, apply)]
 /// extern crate libaoc;
-/// 
+///
 /// fn main() {
 ///     assert_eq!(80, mul!((8, 5, 2)));
 /// }
@@ -818,7 +833,7 @@ macro_rules! mul {
 /// ```
 /// #[macro_use(rem, apply)]
 /// extern crate libaoc;
-/// 
+///
 /// fn main() {
 ///     assert_eq!(2, rem!((5, 10, 3)));
 /// }
@@ -837,9 +852,9 @@ macro_rules! rem {
 /// fn main() {
 ///     let f = noop!(&mut (i64, i64));
 ///     assert_eq!((10, 10), take_func(f, (10, 10)));
-/// 
+///
 ///     let real_func = |n: &mut (i64, i64)| {n.0 += 1; n.1 += 2;};
-///     assert_eq!((11, 12), take_func(real_func, (10, 10))); 
+///     assert_eq!((11, 12), take_func(real_func, (10, 10)));
 /// }
 /// fn take_func<F>(f: F, mut n: (i64, i64)) -> (i64, i64)
 /// where
