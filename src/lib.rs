@@ -369,7 +369,6 @@ impl Display for Direction {
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 pub struct Position<N>
 where
-    N: Add<N> + AddAssign<N> + Sub<N> + SubAssign<N>,
 {
     x: N,
     y: N,
@@ -377,7 +376,7 @@ where
 
 impl<N> Position<N>
 where
-    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N>
+    N: AddAssign<N> + SubAssign<N>
 {
     /// Returns a new Position.
     #[inline]
@@ -501,10 +500,9 @@ where
     }
 }
 
-impl <N> Absolute for Position<N>
-where
-    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
+impl <N: Absolute> Absolute for Position<N>
 {
+    #[inline]
     fn abs(self) -> Self {
         Position {x: self.x.abs(), y: self.y.abs() }
     }
@@ -516,7 +514,7 @@ macro_rules! binops {
         // impl Imp<pos<N>> for pos<N>. Does Not require Clone, because the value is owned.
         impl<N> $imp<$pos<N>> for $pos<N>
         where
-            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N>
+            N: $imp<Output = N>
         {
             type Output = $pos<N>;
 
@@ -529,7 +527,7 @@ macro_rules! binops {
         // impl <'a> Imp<pos<N>> for 'a pos<N>
         impl<'a, N> $imp<$pos<N>> for &'a $pos<N>
         where
-            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+            N: $imp<Output = N> + Clone
         {
             type Output = $pos<N>;
 
@@ -542,7 +540,7 @@ macro_rules! binops {
         // impl <'b> Imp<&'b pos<N>> for pos<N>
         impl<'b, N> $imp<&'b $pos<N>> for $pos<N>
         where
-            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+            N: $imp<Output = N> + Clone
         {
             type Output = $pos<N>;
 
@@ -555,7 +553,7 @@ macro_rules! binops {
         // impl <'a, 'b> Imp<'b pos<N>> for 'a pos<N>
         impl<'a, 'b, N> $imp<&'b $pos<N>> for &'a $pos<N>
         where
-            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+            N: $imp<Output = N> + Clone
         {
             type Output = $pos<N>;
 
@@ -570,13 +568,7 @@ macro_rules! binops {
 binops!(impl Add, add for Position, +);
 binops!(impl Sub, sub for Position, -);
 
-impl<N> Display for Position<N>
-where
-    N: Add<N>
-        + AddAssign<N>
-        + Sub<N>
-        + SubAssign<N>
-        + fmt::Display,
+impl<N: fmt::Display> Display for Position<N>
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         write!(f, "({}, {})", self.x, self.y)
@@ -584,8 +576,6 @@ where
 }
 
 impl <N>From<(N, N)> for Position<N>
-where
-    N: Add<N> + AddAssign<N> + Sub<N> + SubAssign<N>,
 {
     #[inline]
     fn from((n1, n2): (N, N)) -> Position<N> {
@@ -594,8 +584,6 @@ where
 }
 
 impl<N> Into<(N, N)> for Position<N>
-where
-    N: Add<N> + AddAssign<N> + Sub<N> + SubAssign<N>,
 {
     #[inline]
     fn into(self) -> (N, N) {
@@ -603,9 +591,7 @@ where
     }
 }
 
-impl <N> Absolute for (N, N)
-where
-    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
+impl <N: Absolute> Absolute for (N, N)
 {
     #[inline]
     fn abs(self) -> Self {
@@ -636,7 +622,7 @@ where
 
 impl <N> ManhattenDst<N> for Position<N>
 where
-    N: Add<Output = N> + AddAssign<N> + Sub<N> + SubAssign<N> + Absolute
+    N: Add<Output = N> + Absolute
 {
     #[inline]
     fn manhattendst(self) -> N {
