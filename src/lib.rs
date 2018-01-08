@@ -185,7 +185,7 @@ where
     iter.map(|item| item.as_ref().parse()).collect()
 }
 
-/// Takes any Iterator, where the items are implement AsRef<str>.
+/// Takes any Iterator, where the items implement AsRef<str>.
 /// Returns a Vec<N>, where N implements FromStr.
 /// Returns an Error if an error occured.
 /// #Examples
@@ -205,7 +205,11 @@ where
 ///
 ///     assert_eq!(Some(Ok(1)), iter.next());
 ///     assert_eq!(Some(Ok(2)), iter.next());
+/// 
+///     //the next would be 3, but that gives an error. assert_NE.
 ///     assert_ne!(Some(Ok(3)), iter.next());
+/// 
+///     //due to the split call, 4 isn't part of the stream, so next one is 5.
 ///     assert_eq!(Some(Ok(5)), iter.next());
 /// }
 /// ```
