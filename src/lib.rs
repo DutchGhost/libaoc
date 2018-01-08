@@ -373,6 +373,65 @@ where
     x: N,
     y: N,
 }
+macro_rules! binops {
+    (impl $imp:ident, $method:ident for $pos:ident, $oper:tt) => {
+        
+        // impl Imp<pos<N>> for pos<N>. Does Not require Clone, because the value is owned.
+        impl<N> $imp<$pos<N>> for $pos<N>
+        where
+            N: $imp<Output = N>
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: $pos<N>) -> Self::Output {
+                $pos { x: self.x $oper other.x, y: self.y $oper other.y}
+            }
+        }
+
+        // impl <'a> Imp<pos<N>> for 'a pos<N>
+        impl<'a, N> $imp<$pos<N>> for &'a $pos<N>
+        where
+            N: $imp<Output = N> + Clone
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: $pos<N>) -> Self::Output {
+                $pos { x: self.x.clone() $oper other.x, y: self.y.clone() $oper other.y}
+            }
+        }
+
+        // impl <'b> Imp<&'b pos<N>> for pos<N>
+        impl<'b, N> $imp<&'b $pos<N>> for $pos<N>
+        where
+            N: $imp<Output = N> + Clone
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: &'b $pos<N>) -> Self::Output {
+                $pos { x: self.x $oper other.x.clone(), y: self.y $oper other.y.clone()}
+            }
+        }
+
+        // impl <'a, 'b> Imp<'b pos<N>> for 'a pos<N>
+        impl<'a, 'b, N> $imp<&'b $pos<N>> for &'a $pos<N>
+        where
+            N: $imp<Output = N> + Clone
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: &'b $pos<N>) -> Self::Output {
+                $pos { x: self.x.clone() $oper other.x.clone(), y: self.y.clone() $oper other.y.clone()}
+            }
+        }
+    }
+}
+
+binops!(impl Add, add for Position, +);
+binops!(impl Sub, sub for Position, -);
 
 impl<N> Position<N>
 where
@@ -442,6 +501,23 @@ where
         }
     }
 
+    pub fn is_adjecent<'a, 'b>(&'a self, other: &'b Position<N>) -> bool
+    where
+        N: Sub
+    {
+        match self - other {
+            Position { x: 0, y: 1} => true,
+            Position { x: 0, y: -1} => true,
+            Position { x: 1, y: 1} => true,
+            Position { x: 1, y: 0} => true,
+            Position { x: 1, y: -1} => true,
+            Position { x: -1, y: 1} => true,
+            Position { x: -1, y: 0} => true,
+            Position { x: -1, y: -1} => true,
+            _ => false,
+        }
+    }
+
     /// Adds `steps` to y.
     /// #Examples
     /// ```
@@ -507,66 +583,6 @@ impl <N: Absolute> Absolute for Position<N>
         Position {x: self.x.abs(), y: self.y.abs() }
     }
 }
-
-macro_rules! binops {
-    (impl $imp:ident, $method:ident for $pos:ident, $oper:tt) => {
-        
-        // impl Imp<pos<N>> for pos<N>. Does Not require Clone, because the value is owned.
-        impl<N> $imp<$pos<N>> for $pos<N>
-        where
-            N: $imp<Output = N>
-        {
-            type Output = $pos<N>;
-
-            #[inline]
-            fn $method(self, other: $pos<N>) -> Self::Output {
-                $pos { x: self.x $oper other.x, y: self.y $oper other.y}
-            }
-        }
-
-        // impl <'a> Imp<pos<N>> for 'a pos<N>
-        impl<'a, N> $imp<$pos<N>> for &'a $pos<N>
-        where
-            N: $imp<Output = N> + Clone
-        {
-            type Output = $pos<N>;
-
-            #[inline]
-            fn $method(self, other: $pos<N>) -> Self::Output {
-                $pos { x: self.x.clone() $oper other.x, y: self.y.clone() $oper other.y}
-            }
-        }
-
-        // impl <'b> Imp<&'b pos<N>> for pos<N>
-        impl<'b, N> $imp<&'b $pos<N>> for $pos<N>
-        where
-            N: $imp<Output = N> + Clone
-        {
-            type Output = $pos<N>;
-
-            #[inline]
-            fn $method(self, other: &'b $pos<N>) -> Self::Output {
-                $pos { x: self.x $oper other.x.clone(), y: self.y $oper other.y.clone()}
-            }
-        }
-
-        // impl <'a, 'b> Imp<'b pos<N>> for 'a pos<N>
-        impl<'a, 'b, N> $imp<&'b $pos<N>> for &'a $pos<N>
-        where
-            N: $imp<Output = N> + Clone
-        {
-            type Output = $pos<N>;
-
-            #[inline]
-            fn $method(self, other: &'b $pos<N>) -> Self::Output {
-                $pos { x: self.x.clone() $oper other.x.clone(), y: self.y.clone() $oper other.y.clone()}
-            }
-        }
-    }
-}
-
-binops!(impl Add, add for Position, +);
-binops!(impl Sub, sub for Position, -);
 
 impl<N: fmt::Display> Display for Position<N>
 {
