@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use std::cmp::*;
 use std::fmt::{self, Display, Formatter};
-use std::ops;
+use std::ops::*;
 
 /// A trait to get the absolute value of a number.
 /// #Examples
@@ -356,18 +356,20 @@ impl Display for Direction {
 ///     assert_eq!(Position::new(10, 10), p2 - p1);
 /// 
 ///     let rp1 = &Position::new(10, 20);
-///     let p2 = Position::new(-20, 30);
+///     let otherp2 = Position::new(-20, 30);
 ///     
-///     let p3 = p2 - p1;
+///     let p3 = otherp2 - rp1;
 ///     assert_eq!(Position::new(-30, 10), p3);
 ///     
 ///     assert_eq!(Position::new(30, 10), p3.abs());
+/// 
+///     assert_eq!(Position::new(-10, 40), p3 + p2);
 /// }
 /// ```
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
 pub struct Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
+    N: Add<N> + AddAssign<N> + Sub<N> + SubAssign<N>,
 {
     x: N,
     y: N,
@@ -375,7 +377,7 @@ where
 
 impl<N> Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N>
+    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N>
 {
     /// Returns a new Position.
     #[inline]
@@ -501,64 +503,77 @@ where
 
 impl <N> Absolute for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Absolute
+    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
 {
     fn abs(self) -> Self {
         Position {x: self.x.abs(), y: self.y.abs() }
     }
 }
 
-impl <N> ops::Sub for Position<N>
-where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N>
-{
-    type Output = Position<N>;
+macro_rules! binops {
+    (impl $imp:ident, $method:ident for $pos:ident, $oper:tt) => {
+        
+        // impl Imp<pos<N>> for pos<N>
+        impl<N> $imp<$pos<N>> for $pos<N>
+        where
+            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+        {
+            type Output = $pos<N>;
 
-    #[inline]
-    fn sub(self, other: Position<N>) -> Self::Output {
-        Position{ x: self.x - other.x, y: self.y - other.y }
+            #[inline]
+            fn $method(self, other: $pos<N>) -> Self::Output {
+                $pos { x: self.x $oper other.x, y: self.y $oper other.y}
+            }
+        }
+
+        // impl <'a> Imp<pos<N>> for 'a pos<N>
+        impl<'a, N> $imp<$pos<N>> for &'a $pos<N>
+        where
+            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: $pos<N>) -> Self::Output {
+                $pos { x: self.x.clone() $oper other.x, y: self.y.clone() $oper other.y}
+            }
+        }
+
+        // impl <'b> Imp<&'b pos<N>> for pos<N>
+        impl<'b, N> $imp<&'b $pos<N>> for $pos<N>
+        where
+            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: &'b $pos<N>) -> Self::Output {
+                $pos { x: self.x $oper other.x.clone(), y: self.y $oper other.y.clone()}
+            }
+        }
+
+        // impl <'a, 'b> Imp<'b pos<N>> for 'a pos<N>
+        impl<'a, 'b, N> $imp<&'b $pos<N>> for &'a $pos<N>
+        where
+            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+        {
+            type Output = $pos<N>;
+
+            #[inline]
+            fn $method(self, other: &'b $pos<N>) -> Self::Output {
+                $pos { x: self.x.clone() $oper other.x.clone(), y: self.y.clone() $oper other.y.clone()}
+            }
+        }
     }
 }
 
-impl <'a, 'b, N> ops::Sub<&'b Position<N>> for &'a Position<N>
-where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
-{
-    type Output = Position<N>;
+binops!(impl Add, add for Position, +);
+binops!(impl Sub, sub for Position, -);
 
-    #[inline]
-    fn sub(self, other: &'b Position<N>) -> Self::Output {
-        Position { x: self.x.clone() - other.x.clone(), y: self.y.clone() - other.y.clone() }
-    }
-}
-
-impl <'a, N> ops::Sub<&'a Position<N>> for Position<N>
-where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
-{
-    type Output = Position<N>;
-
-    #[inline]
-    fn sub(self, other: &'a Position<N>) -> Self::Output {
-        Position { x: self.x - other.x.clone(), y: self.y - other.y.clone() }
-    }
-}
-
-impl <'a, N> ops::Sub<Position<N>> for &'a Position<N>
-where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Clone
-{
-    type Output = Position<N>;
-
-    #[inline]
-    fn sub(self, other: Position<N>) -> Self::Output {
-        Position{ x: self.x.clone() - other.x, y: self.y.clone() - other.y }
-    }
-}
 
 impl <N> Absolute for (N, N)
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<Output = N> + ops::SubAssign<N> + Absolute
+    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
 {
     fn abs(self) -> Self {
         (self.0.abs(), self.1.abs())
@@ -568,10 +583,10 @@ where
 
 impl<N> Display for Position<N>
 where
-    N: ops::Add<N>
-        + ops::AddAssign<N>
-        + ops::Sub<N>
-        + ops::SubAssign<N>
+    N: Add<N>
+        + AddAssign<N>
+        + Sub<N>
+        + SubAssign<N>
         + fmt::Display,
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
@@ -581,7 +596,7 @@ where
 
 impl <N>From<(N, N)> for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
+    N: Add<N> + AddAssign<N> + Sub<N> + SubAssign<N>,
 {
     #[inline]
     fn from((n1, n2): (N, N)) -> Position<N> {
@@ -591,7 +606,7 @@ where
 
 impl<N> Into<(N, N)> for Position<N>
 where
-    N: ops::Add<N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N>,
+    N: Add<N> + AddAssign<N> + Sub<N> + SubAssign<N>,
 {
     #[inline]
     fn into(self) -> (N, N) {
@@ -614,14 +629,14 @@ where
 /// ```
 pub trait ManhattenDst<N>
 where
-    N: ops::Add<Output = N>,
+    N: Add<Output = N>,
 {
     fn manhattendst(self) -> N;
 }
 
 impl <N> ManhattenDst<N> for Position<N>
 where
-    N: ops::Add<Output = N> + ops::AddAssign<N> + ops::Sub<N> + ops::SubAssign<N> + Absolute
+    N: Add<Output = N> + AddAssign<N> + Sub<N> + SubAssign<N> + Absolute
 {
     #[inline]
     fn manhattendst(self) -> N {
@@ -631,7 +646,7 @@ where
 
 impl <N> ManhattenDst<N> for (N, N)
 where
-    N: ops::Add<Output = N> + Absolute
+    N: Add<Output = N> + Absolute
 {   
     #[inline]
     fn manhattendst(self) -> N {
@@ -641,7 +656,7 @@ where
 
 impl <N> ManhattenDst<N> for (N, N, N)
 where
-    N: ops::Add<Output = N> + Absolute,
+    N: Add<Output = N> + Absolute,
 {   
     #[inline]
     fn manhattendst(self) -> N {
