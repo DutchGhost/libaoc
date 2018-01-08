@@ -502,7 +502,7 @@ where
     }
 
     /// Check whether self and `other` are adjecent. That is, if the absolute x value and the absolute y value after subtracting `self` from `other`
-    /// is (1, 0), (0, 1) or (1, 1).
+    /// is either (1, 0), (0, 1) or (1, 1).
     /// #Examples
     /// ```
     /// extern crate libaoc;
