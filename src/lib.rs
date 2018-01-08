@@ -513,10 +513,10 @@ where
 macro_rules! binops {
     (impl $imp:ident, $method:ident for $pos:ident, $oper:tt) => {
         
-        // impl Imp<pos<N>> for pos<N>
+        // impl Imp<pos<N>> for pos<N>. Does Not require Clone, because the value is owned.
         impl<N> $imp<$pos<N>> for $pos<N>
         where
-            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Clone
+            N: Add<Output = N> + AddAssign<N> + Sub<Output = N> + SubAssign<N>
         {
             type Output = $pos<N>;
 
@@ -569,7 +569,6 @@ macro_rules! binops {
 
 binops!(impl Add, add for Position, +);
 binops!(impl Sub, sub for Position, -);
-
 
 impl <N> Absolute for (N, N)
 where
