@@ -570,17 +570,6 @@ macro_rules! binops {
 binops!(impl Add, add for Position, +);
 binops!(impl Sub, sub for Position, -);
 
-impl <N> Absolute for (N, N)
-where
-    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
-{
-    #[inline]
-    fn abs(self) -> Self {
-        (self.0.abs(), self.1.abs())
-    }
-}
-
-
 impl<N> Display for Position<N>
 where
     N: Add<N>
@@ -613,6 +602,17 @@ where
         (self.x, self.y)
     }
 }
+
+impl <N> Absolute for (N, N)
+where
+    N: Add<N> + AddAssign<N> + Sub<Output = N> + SubAssign<N> + Absolute
+{
+    #[inline]
+    fn abs(self) -> Self {
+        (self.0.abs(), self.1.abs())
+    }
+}
+
 /// Returns the manhatten distance of any Position with type N.
 /// A position is either a tuple, or the struct [Position](struct.Position.html).
 /// the manhatten distance is the sum of the absolute values of a coordinate.
