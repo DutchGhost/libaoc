@@ -510,10 +510,21 @@ where
     /// fn main() {
     ///     let pos1 = Position::new(5, 6);
     ///     let pos2 = Position::new(6, 7);
+    ///     
     /// 
     ///     assert_eq!(true, pos1.is_adjecent(&pos2));
     ///     assert_eq!(true, pos2.is_adjecent(&pos1));
+    ///     
+    ///     let pos3 = Position::new(-1, 0);
+    ///     let pos4 = Position::new(0, 0);
+    /// 
+    ///     assert_eq!(true, pos3.is_adjecent(&pos4));
+    ///     assert_eq!(true, pos4.is_adjecent(&pos3));
+    /// 
+    ///     assert_eq!(false, pos4.is_adjecent(&pos4));
+    ///     assert_eq!(false, pos3.is_adjecent(&pos1));
     /// }
+    /// ```
     #[inline]
     pub fn is_adjecent<'a, 'b>(&'a self, other: &'b Position<N>) -> bool
     where
