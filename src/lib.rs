@@ -4,10 +4,10 @@
 //! a struct and an enum for keeping track of a Position and a Direction,
 //! a trait for calculating the `manhatten-distance`,
 //! a trait implemented on all integers, that allow to get the absolute value of that integer,
-//! and a trait for quickly sorting a tuple in assecding or descending order.
+//! and a trait for quickly sorting a tuple in ascending or descending order.
 //! 
 //! Also supports reading tekst from a file into a String, or Vec<u8>, however this is a feature of this library, and is considered unstable.
-//! 
+
 mod convert;
 mod absolute;
 mod movement;
@@ -27,6 +27,13 @@ pub mod movements {
 pub use converting::*;
 pub use abs::*;
 pub use movement::*;
+
+#[cfg(feature = "readfile")]
+mod reading;
+#[cfg(feature = "readfile")]
+pub mod readfile {
+    pub use reading::*;
+}
 
 /// Returns a tuple, sorted by the max value.
 /// #Examples
@@ -127,59 +134,6 @@ where
             self
         } else {
             (self.1, self.0)
-        }
-    }
-}
-
-#[cfg(feature = "readfile")]
-pub mod readfile {
-    use std::fs::File;
-    use std::io::{self, BufReader};
-    use std::io::prelude::*;
-    use std::path::Path;
-    use std::ffi::OsStr;
-
-    fn into_buf_reader<S: AsRef<OsStr>>(s: S) -> Result<BufReader<File>, io::Error> {
-        let path: &Path = Path::new(s.as_ref());
-        let f = File::open(path)?;
-        Ok(BufReader::new(f))
-    }
-    /// Opens a file, an reads it to whatever type it was called on.
-    /// #Examples
-    /// ```
-    /// extern crate libaoc;
-    /// use libaoc::readfile::ReadFile;
-    /// fn main() {
-    ///     let puzzle = match Vec::<u8>::read_file(r"test.txt") {
-    ///         Ok(content) => content,
-    ///         Err(_) => Vec::new(),
-    ///     };
-    ///     assert_eq!(b"hello! this is a test!"[..], puzzle[..]);
-    /// }
-    /// ```
-    pub trait ReadFile {
-        type Content;
-
-        fn read_file<S: AsRef<OsStr>>(s: S) -> Result<Self::Content, io::Error>;
-    }
-
-    impl ReadFile for String {
-        type Content = String;
-        fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
-            let mut s = String::new();
-            let mut bufreader = into_buf_reader(path)?;
-            bufreader.read_to_string(&mut s)?;
-            Ok(s)
-        }
-    }
-
-    impl<T> ReadFile for Vec<T> {
-        type Content = Vec<u8>;
-        fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
-            let mut v: Vec<u8> = Vec::new();
-            let mut bufreader = into_buf_reader(path)?;
-            bufreader.read_to_end(&mut v)?;
-            Ok(v)
         }
     }
 }
