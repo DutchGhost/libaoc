@@ -101,8 +101,8 @@ impl Display for Direction {
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::Movement::{Position, ManhattenDst};
-/// use libaoc::Absolute::Absolute;
+/// use libaoc::movements::{Position, ManhattenDst};
+/// use libaoc::abs::Absolute;
 /// fn main() {
 ///     let tup = (-10i32, 21i32);
 ///     let pos = Position::new(-10i32, 21i32);
@@ -210,7 +210,7 @@ where
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::Movement::{Position, Direction};
+    /// use libaoc::movements::{Position, Direction};
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     let dir = Direction::init_up();
@@ -303,7 +303,7 @@ where
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::{Absolute, Position};
+    /// use libaoc::movements::Position;
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     pos.increment_y(10);

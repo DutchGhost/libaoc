@@ -7,7 +7,7 @@ use ::std::fmt;
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::Convert::TryConvert;
+/// use libaoc::converting::TryConvert;
 ///
 /// fn main () {
 ///     let s = "1, 2, 3, 4, 5";
@@ -93,8 +93,8 @@ where
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::Convert::Convert;
-/// use libaoc::Movement::Position;
+/// use libaoc::converting::Convert;
+/// use libaoc::movements::Position;
 /// fn main() {
 ///     let tuple1 = (0, 0);
 ///     let tuple2 = (1, 1);

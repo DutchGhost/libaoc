@@ -2,7 +2,7 @@
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::Absolute::Absolute;
+/// use libaoc::abs::Absolute;
 /// fn main() {
 ///     assert_eq!(10, (-10i32).abs());
 ///     assert_eq!(20, 20u32.abs());

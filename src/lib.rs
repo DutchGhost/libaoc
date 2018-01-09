@@ -2,21 +2,21 @@ mod convert;
 mod absolute;
 mod movement;
 
-pub mod Convert {
+pub mod converting {
     pub use convert::*;
 }
 
-pub mod Absolute {
+pub mod abs {
     pub use absolute::*;
 }
 
-pub mod Movement {
+pub mod movements {
     pub use movement::*;
 }
 
-pub use Convert::*;
-pub use Absolute::*;
-pub use Movement::*;
+pub use converting::*;
+pub use abs::*;
+pub use movement::*;
 
 /// Returns a tuple, sorted by the max value.
 /// #Examples
