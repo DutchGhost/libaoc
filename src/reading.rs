@@ -13,7 +13,7 @@ fn into_buf_reader<S: AsRef<OsStr>>(s: S) -> Result<BufReader<File>, io::Error> 
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::readfile::ReadFile;
+/// use libaoc::reading::ReadFile;
 /// fn main() {
 ///     let puzzle = match Vec::<u8>::read_file(r"test.txt") {
 ///         Ok(content) => content,

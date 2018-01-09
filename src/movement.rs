@@ -101,8 +101,8 @@ impl Display for Direction {
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::movements::{Position, ManhattenDst};
-/// use libaoc::abs::Absolute;
+/// use libaoc::movement::{Position, ManhattenDst};
+/// use libaoc::absolute::Absolute;
 /// fn main() {
 ///     let tup = (-10i32, 21i32);
 ///     let pos = Position::new(-10i32, 21i32);
@@ -210,7 +210,7 @@ where
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::movements::{Position, Direction};
+    /// use libaoc::movement::{Position, Direction};
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     let dir = Direction::init_up();
@@ -238,7 +238,7 @@ where
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::{Direction, Position};
+    /// use libaoc::movement::{Direction, Position};
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     let dir = Direction::init_up();
@@ -267,7 +267,8 @@ where
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::Position;
+    /// use libaoc::movement::Position;
+    /// use libaoc::absolute::Absolute;
     /// fn main() {
     ///     let pos1 = Position::new(5, 6);
     ///     let pos2 = Position::new(6, 7);
@@ -303,7 +304,7 @@ where
     /// #Examples
     /// ```
     /// extern crate libaoc;
-    /// use libaoc::movements::Position;
+    /// use libaoc::movement::Position;
     /// fn main() {
     ///     let mut pos = Position::new(0, 0);
     ///     pos.increment_y(10);
@@ -398,7 +399,7 @@ impl<N> Into<(N, N)> for Position<N> {
 /// #Examples
 /// ```
 /// extern crate libaoc;
-/// use libaoc::{ManhattenDst, Position};
+/// use libaoc::movement::{ManhattenDst, Position};
 ///
 /// fn main() {
 ///     let pos = Position::new(-1, 11i16);

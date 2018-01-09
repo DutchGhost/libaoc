@@ -8,32 +8,12 @@
 //! 
 //! Also supports reading tekst from a file into a String, or Vec<u8>, however this is a feature of this library, and is considered unstable.
 
-mod convert;
-mod absolute;
-mod movement;
-
-pub mod converting {
-    pub use convert::*;
-}
-
-pub mod abs {
-    pub use absolute::*;
-}
-
-pub mod movements {
-    pub use movement::*;
-}
-
-pub use converting::*;
-pub use abs::*;
-pub use movement::*;
+pub mod convert;
+pub mod absolute;
+pub mod movement;
 
 #[cfg(feature = "readfile")]
-mod reading;
-#[cfg(feature = "readfile")]
-pub mod readfile {
-    pub use reading::*;
-}
+pub mod reading;
 
 /// Returns a tuple, sorted by the max value.
 /// #Examples
