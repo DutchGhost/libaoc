@@ -1,3 +1,13 @@
+//! This a library containing functions, structs, enums, traits and methods for common little problems while solving the Advent of Code.
+//!
+//! This library has a trait for converting Iterators,
+//! a struct and an enum for keeping track of a Position and a Direction,
+//! a trait for calculating the `manhatten-distance`,
+//! a trait implemented on all integers, that allow to get the absolute value of that integer,
+//! and a trait for quickly sorting a tuple in assecding or descending order.
+//! 
+//! Also supports reading tekst from a file into a String, or Vec<u8>, however this is a feature of this library, and is considered unstable.
+//! 
 mod convert;
 mod absolute;
 mod movement;

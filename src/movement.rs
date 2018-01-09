@@ -409,6 +409,7 @@ pub trait ManhattenDst<N>
 where
     N: Add<Output = N>,
 {
+    /// Returns the `manhattendistance` of self.
     fn manhattendst(self) -> N;
 }
 
