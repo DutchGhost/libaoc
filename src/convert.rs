@@ -35,25 +35,29 @@ where
     S: AsRef<str>,
     I: Iterator<Item = S>,
 {
+    type Error;
+    type Iterable : Iterator<Item = Result<U, Self::Error>>;
+    type UnsafeIterable : Iterator <Item = U>;
+    
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
-    fn try_convert(self) -> Result<Vec<U>, <U as FromStr>::Err>;
+    fn try_convert(self) -> Result<Vec<U>, Self::Error>;
 
     /// On succes, returns a vector of all completed conversions.
     /// #Panic
     /// Panics when an error occures.
     unsafe fn unsafe_convert(self) -> Vec<U>
     where
-        <U as FromStr>::Err: ::std::fmt::Debug;
+        Self::Error: ::std::fmt::Debug;
     
     /// Returns an iterator over the converted items. Returns an error if an item can not be converted. Continue's after the error.
-    fn try_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> Result<U, <U as FromStr>::Err>>;
+    fn try_convert_iter(self) -> Self::Iterable;
 
     /// Returns an iterator over the converted items.
     /// #Panic
     /// Panics when an error occures.
-    unsafe fn unsafe_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> U>
+    unsafe fn unsafe_convert_iter(self) -> Self::UnsafeIterable
     where
-        <U as FromStr>::Err: fmt::Debug;
+        Self::Error: fmt::Debug;
 }
 
 impl<U, S, I> TryConvert<U, S, I> for I
@@ -62,28 +66,32 @@ where
     S: AsRef<str>,
     I: Iterator<Item = S>,
 {   
+    type Error = <U as FromStr>::Err;
+    type Iterable = ::std::iter::Map<I, fn(S) -> Result<U, Self::Error>>;
+    type UnsafeIterable = ::std::iter::Map<I, fn(S) -> U>;
+
     #[inline]
-    fn try_convert(self) -> Result<Vec<U>, <U as FromStr>::Err> {
+    fn try_convert(self) -> Result<Vec<U>, Self::Error> {
         self.try_convert_iter().collect()
     }
 
     #[inline]
     unsafe fn unsafe_convert(self) -> Vec<U>
     where
-        <U as FromStr>::Err: fmt::Debug,
+        Self::Error: fmt::Debug,
     {
         self.unsafe_convert_iter().collect()
     }
 
     #[inline]
-    fn try_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> Result<U, <U as FromStr>::Err>> {
+    fn try_convert_iter(self) -> Self::Iterable {
         self.map(|item| item.as_ref().parse())
     }
 
     #[inline]
-    unsafe fn unsafe_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> U>
+    unsafe fn unsafe_convert_iter(self) -> Self::UnsafeIterable
     where
-        <U as FromStr>::Err: fmt::Debug
+        Self::Error: fmt::Debug
     {
         self.map(|item| item.as_ref().parse().unwrap())
     }
@@ -113,16 +121,18 @@ where
 ///     assert_eq!(Some(Position::new(3, 4)), convert_iter.next());
 /// }
 /// ```
-pub trait Convert<T, U, I>
+pub trait Convert<T, U, I,>
 where
     U: From<T>,
     I: Iterator<Item = T>,
 {
+    type Iterable : Iterator<Item = U>;
+    
     /// Returns a vector of all completed conversions.
     fn convert(self) -> Vec<U>;
     
     /// Returns an iterator that performs the conversions.
-    fn convert_iter(self) -> ::std::iter::Map<I, fn(T) -> U>;
+    fn convert_iter(self) -> Self::Iterable;
 }
 
 impl<T, U, I> Convert<T, U, I> for I
@@ -130,13 +140,15 @@ where
     U: From<T>,
     I: Iterator<Item = T>,
 {
+    type Iterable = ::std::iter::Map<I, fn(T) -> U>;
+
     #[inline]
     fn convert(self) -> Vec<U> {
         self.convert_iter().collect()
     }
 
     #[inline]
-    fn convert_iter(self) -> ::std::iter::Map<I, fn(T) -> U> {
+    fn convert_iter(self) -> Self::Iterable {
         self.map(|item| U::from(item))
     }
 }
