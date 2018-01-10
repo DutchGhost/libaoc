@@ -59,6 +59,9 @@ where
     /// }
     /// ```
     fn try_convert_into_slice(self, slice: &mut [U]) -> Result<usize, usize>;
+    
+    /// Returns an iterator over the converted items. Returns an error if an item can not be converted. Continue's after the error.
+    fn try_convert_iter(self) -> Self::Iterable;
 
     /// On succes, returns a vector of all completed conversions.
     /// #Panic
@@ -67,9 +70,6 @@ where
     where
         Self::Error: ::std::fmt::Debug;
     
-    /// Returns an iterator over the converted items. Returns an error if an item can not be converted. Continue's after the error.
-    fn try_convert_iter(self) -> Self::Iterable;
-
     /// Returns an iterator over the converted items.
     /// #Panic
     /// Panics when an error occures.
@@ -107,16 +107,16 @@ where
     }
 
     #[inline]
+    fn try_convert_iter(self) -> Self::Iterable {
+        self.map(|item| item.as_ref().parse())
+    }
+
+    #[inline]
     unsafe fn unsafe_convert(self) -> Vec<U>
     where
         Self::Error: fmt::Debug,
     {
         self.unsafe_convert_iter().collect()
-    }
-
-    #[inline]
-    fn try_convert_iter(self) -> Self::Iterable {
-        self.map(|item| item.as_ref().parse())
     }
 
     #[inline]
