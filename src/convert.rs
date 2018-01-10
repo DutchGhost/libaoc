@@ -29,61 +29,61 @@ use ::std::fmt;
 ///     assert_eq!(Some(Ok(5)), iter.next());
 /// }
 /// ```
-pub trait TryConvert<N, S, I>
+pub trait TryConvert<U, S, I>
 where
-    N: FromStr,
+    U: FromStr,
     S: AsRef<str>,
     I: Iterator<Item = S>,
 {
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
-    fn try_convert(self) -> Result<Vec<N>, <N as FromStr>::Err>;
+    fn try_convert(self) -> Result<Vec<U>, <U as FromStr>::Err>;
 
     /// On succes, returns a vector of all completed conversions.
     /// #Panic
     /// Panics when an error occures.
-    unsafe fn unsafe_convert(self) -> Vec<N>
+    unsafe fn unsafe_convert(self) -> Vec<U>
     where
-        <N as FromStr>::Err: ::std::fmt::Debug;
+        <U as FromStr>::Err: ::std::fmt::Debug;
     
     /// Returns an iterator over the converted items. Returns an error if an item can not be converted. Continue's after the error.
-    fn try_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> Result<N, <N as FromStr>::Err>>;
+    fn try_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> Result<U, <U as FromStr>::Err>>;
 
     /// Returns an iterator over the converted items.
     /// #Panic
     /// Panics when an error occures.
-    unsafe fn unsafe_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> N>
+    unsafe fn unsafe_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> U>
     where
-        <N as FromStr>::Err: fmt::Debug;
+        <U as FromStr>::Err: fmt::Debug;
 }
 
-impl<N, S, I> TryConvert<N, S, I> for I
+impl<U, S, I> TryConvert<U, S, I> for I
 where
-    N: FromStr,
+    U: FromStr,
     S: AsRef<str>,
     I: Iterator<Item = S>,
 {   
     #[inline]
-    fn try_convert(self) -> Result<Vec<N>, <N as FromStr>::Err> {
+    fn try_convert(self) -> Result<Vec<U>, <U as FromStr>::Err> {
         self.try_convert_iter().collect()
     }
 
     #[inline]
-    unsafe fn unsafe_convert(self) -> Vec<N>
+    unsafe fn unsafe_convert(self) -> Vec<U>
     where
-        <N as FromStr>::Err: fmt::Debug,
+        <U as FromStr>::Err: fmt::Debug,
     {
         self.unsafe_convert_iter().collect()
     }
 
     #[inline]
-    fn try_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> Result<N, <N as FromStr>::Err>> {
+    fn try_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> Result<U, <U as FromStr>::Err>> {
         self.map(|item| item.as_ref().parse())
     }
 
     #[inline]
-    unsafe fn unsafe_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> N>
+    unsafe fn unsafe_convert_iter(self) -> ::std::iter::Map<I, fn(S) -> U>
     where
-        <N as FromStr>::Err: fmt::Debug
+        <U as FromStr>::Err: fmt::Debug
     {
         self.map(|item| item.as_ref().parse().unwrap())
     }
