@@ -1,12 +1,14 @@
 use ::std::str::FromStr;
 use ::std::fmt;
 
-/// Takes any Iterator, where the items implement AsRef<str>.
-/// Returns a Vec<N>, where N implements FromStr.
-/// Returns an Error if an error occured.
+/// This trait allows to convert a stream of `str`'s, into a stream or collection of type U.
+/// All safe versions return an Error when the conversion fails,
+/// the unsafe versions will panic instead.
+/// The unsafe versions are not concidered faster, but they safe one from matching or unwrapping the result.
 /// #Examples
 /// ```
 /// extern crate libaoc;
+/// 
 /// use libaoc::convert::TryConvert;
 ///
 /// fn main () {
@@ -44,10 +46,13 @@ where
 
     /// Tries to convert a stream of T into a slice of U.
     /// On an error, returns how many items where converted.
-    /// #Examples
+    /// #Examples]
+    /// 
     /// ```
     /// extern crate libaoc;
+    /// 
     /// use libaoc::convert::TryConvert;
+    /// 
     /// fn main() {
     ///     let s = "1, 2, 3, 4, 5,6";
     ///     let mut buff = [0i64; 6];
@@ -128,12 +133,15 @@ where
     }
 }
 
-/// Used to convert a stream of T into a Vec of U.
+/// This trait allows to convert a stream with items of type T into a stream or collection with items of type U.
+/// 
 /// #Examples
 /// ```
 /// extern crate libaoc;
+/// 
 /// use libaoc::convert::Convert;
 /// use libaoc::movement::Position;
+/// 
 /// fn main() {
 ///     let tuple1 = (0, 0);
 ///     let tuple2 = (1, 1);
@@ -157,16 +165,19 @@ where
     U: From<T>,
     I: Iterator<Item = T>,
 {
-    type Iterable : Iterator<Item = U>;
+    type Iterable: Iterator<Item = U>;
     
     /// Returns a vector of all completed conversions.
     fn convert(self) -> Vec<U>;
 
-    /// Converts the stream, and put's the items into `slice`.
+    /// Converts the stream, and writes the items into `slice`.
+    /// 
     /// #Examples
     /// ```
     /// extern crate libaoc;
+    /// 
     /// use libaoc::convert::Convert;
+    /// 
     /// fn main() {
     ///     let chars = vec![97, 98, 99, 100, 101];
     ///     let mut slice: [char; 5] = ['-'; 5];
