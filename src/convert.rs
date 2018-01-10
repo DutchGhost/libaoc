@@ -42,6 +42,24 @@ where
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
     fn try_convert(self) -> Result<Vec<U>, Self::Error>;
 
+    /// Tries to convert a stream of T into a slice of U.
+    /// On an error, returns how many items where converted.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::convert::TryConvert;
+    /// fn main() {
+    ///     let s = "1, 2, 3, 4, 5,6";
+    ///     let mut buff = [0i64; 6];
+    ///     
+    ///     let succeded = s.split(", ").try_convert_into_slice(&mut buff);
+    /// 
+    ///     assert_eq!([1, 2, 3, 4, 0, 0], buff);
+    ///     assert_eq!(Err(4), succeded);
+    /// }
+    /// ```
+    fn try_convert_into_slice(self, slice: &mut [U]) -> Result<usize, usize>;
+
     /// On succes, returns a vector of all completed conversions.
     /// #Panic
     /// Panics when an error occures.
@@ -73,6 +91,19 @@ where
     #[inline]
     fn try_convert(self) -> Result<Vec<U>, Self::Error> {
         self.try_convert_iter().collect()
+    }
+
+    #[inline]
+    fn try_convert_into_slice(self, slice: &mut [U]) -> Result<usize, usize> {
+        for ((idx, dst), src) in slice.iter_mut().enumerate().zip(self.try_convert_iter()) {
+            if let Ok(converted) = src {
+                *dst = converted;
+            }
+            else {
+                return Err(idx);
+            }
+        }
+        Ok(slice.len())
     }
 
     #[inline]
@@ -137,16 +168,15 @@ where
     /// extern crate libaoc;
     /// use libaoc::convert::Convert;
     /// fn main() {
-    ///     let chars = ['a', 'b', 'c', 'd'];
-    ///     let mut slice: [u8; 5];
+    ///     let chars = vec![97, 98, 99, 100, 101];
+    ///     let mut slice: [char; 5] = ['-'; 5];
     /// 
-    ///     chars.into_iter().convert_into(&mut slice);
-    ///     println!("{:?}", slice);
+    ///     chars.into_iter().convert_into_slice(&mut slice);
     ///     
-    ///     assert_eq!(true, false);
+    ///     assert_eq!(['a', 'b', 'c', 'd', 'e'], slice);
     /// }
     /// ```
-    fn convert_into(self, slice: &mut [U]);
+    fn convert_into_slice(self, slice: &mut [U]);
     
     /// Returns an iterator that performs the conversions.
     fn convert_iter(self) -> Self::Iterable;
@@ -165,7 +195,7 @@ where
     }
     
     #[inline]
-    fn convert_into(self, slice: &mut [U]) {
+    fn convert_into_slice(self, slice: &mut [U]) {
         slice.iter_mut().zip(self.convert_iter()).for_each(|(dst, src)| *dst = src)
     }
 
