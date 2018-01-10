@@ -38,7 +38,7 @@ where
     type Error;
     type Iterable : Iterator<Item = Result<U, Self::Error>>;
     type UnsafeIterable : Iterator <Item = U>;
-    
+
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
     fn try_convert(self) -> Result<Vec<U>, Self::Error>;
 
@@ -130,6 +130,23 @@ where
     
     /// Returns a vector of all completed conversions.
     fn convert(self) -> Vec<U>;
+
+    /// Converts the stream, and put's the items into `slice`.
+    /// #Examples
+    /// ```
+    /// extern crate libaoc;
+    /// use libaoc::convert::Convert;
+    /// fn main() {
+    ///     let chars = ['a', 'b', 'c', 'd'];
+    ///     let mut slice: [u8; 5];
+    /// 
+    ///     chars.into_iter().convert_into(&mut slice);
+    ///     println!("{:?}", slice);
+    ///     
+    ///     assert_eq!(true, false);
+    /// }
+    /// ```
+    fn convert_into(self, slice: &mut [U]);
     
     /// Returns an iterator that performs the conversions.
     fn convert_iter(self) -> Self::Iterable;
@@ -146,9 +163,14 @@ where
     fn convert(self) -> Vec<U> {
         self.convert_iter().collect()
     }
+    
+    #[inline]
+    fn convert_into(self, slice: &mut [U]) {
+        slice.iter_mut().zip(self.convert_iter()).for_each(|(dst, src)| *dst = src)
+    }
 
     #[inline]
     fn convert_iter(self) -> Self::Iterable {
-        self.map(|item| U::from(item))
+        self.map(move |item| U::from(item))
     }
 }
