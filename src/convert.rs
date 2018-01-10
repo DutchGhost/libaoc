@@ -37,8 +37,13 @@ where
     S: AsRef<str>,
     I: Iterator<Item = S>,
 {
+    /// The Errortype that gets returned on an error.
     type Error;
+
+    /// The Iterator that gets returned from [try_convert_iter()](trait.TryConvert.html#tymethod.try_convert_iter)
     type Iterable : Iterator<Item = Result<U, Self::Error>>;
+
+    /// The Iterator that gets returned from [unsafe_convert_iter](trait.TryConvert.html#tymethod.unsafe_convert_iter)
     type UnsafeIterable : Iterator <Item = U>;
 
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
@@ -165,6 +170,7 @@ where
     U: From<T>,
     I: Iterator<Item = T>,
 {
+    /// The Iterator that gets returned from [convert_iter()](trait.Convert.html#tymethod.convert_iter)
     type Iterable: Iterator<Item = U>;
     
     /// Returns a vector of all completed conversions.
