@@ -41,10 +41,10 @@ where
     type Error;
 
     /// The Iterator that gets returned from [try_convert_iter()](trait.TryConvert.html#tymethod.try_convert_iter)
-    type Iterable : Iterator<Item = Result<U, Self::Error>>;
+    type Iterable: Iterator<Item = Result<U, Self::Error>>;
 
     /// The Iterator that gets returned from [unsafe_convert_iter](trait.TryConvert.html#tymethod.unsafe_convert_iter)
-    type UnsafeIterable : Iterator <Item = U>;
+    type UnsafeIterable: Iterator <Item = U>;
 
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
     fn try_convert(self) -> Result<Vec<U>, Self::Error>;
@@ -66,6 +66,13 @@ where
     /// 
     ///     assert_eq!([1, 2, 3, 4, 0, 0], buff);
     ///     assert_eq!(Err(4), succeded);
+    /// 
+    ///     let s = "1, 2, 3, 4, 5, 6, 7, 8, 9";
+    ///     let written = s.split(", ").try_convert_into_slice(&mut buff);
+    ///     assert_eq!(Ok(6), written);
+    /// 
+    ///     let written = s.split(", ").take(2).try_convert_into_slice(&mut buff);
+    ///     assert_eq!(Ok(2), written);
     /// }
     /// ```
     fn try_convert_into_slice(self, slice: &mut [U]) -> Result<usize, usize>;
@@ -195,7 +202,7 @@ where
     ///     assert_eq!(['a', 'b', 'c', 'd', 'e'], slice);
     /// }
     /// ```
-    fn convert_into_slice(self, slice: &mut [U]);
+    fn convert_into_slice(self, slice: &mut [U]) -> usize;
     
     /// Returns an iterator that performs the conversions.
     fn convert_iter(self) -> Self::Iterable;
@@ -214,8 +221,12 @@ where
     }
     
     #[inline]
-    fn convert_into_slice(self, slice: &mut [U]) {
-        slice.iter_mut().zip(self.convert_iter()).for_each(|(dst, src)| *dst = src)
+    fn convert_into_slice(self, slice: &mut [U]) -> usize {
+        slice
+            .iter_mut()
+            .zip(self.convert_iter())
+            .map(|(dst, src)| {*dst = src; 1})
+            .sum()
     }
 
     #[inline]
