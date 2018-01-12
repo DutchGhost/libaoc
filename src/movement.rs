@@ -81,12 +81,14 @@ impl Direction {
     /// Panics whenever the current direction is [`Init`](enum.Direction.html#variant.Init).
     #[inline]
     pub fn reverse(self) -> Direction {
+        assert!(self != Direction::Init, "Reversing a Direction::Init impossible!");
+        
         match self {
             Direction::Up => Direction::Down,
             Direction::Down => Direction::Up,
             Direction::Left => Direction::Right,
             Direction::Right => Direction::Left,
-            Direction::Init => panic!("Reversing a Direction::Init is not possible"),
+            Direction::Init => unreachable!(),
         }
     }
 }
