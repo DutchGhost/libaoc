@@ -197,9 +197,10 @@ where
     ///     let chars = vec![97, 98, 99, 100, 101];
     ///     let mut slice: [char; 5] = ['-'; 5];
     /// 
-    ///     chars.into_iter().convert_into_slice(&mut slice);
+    ///     let written = chars.into_iter().convert_into_slice(&mut slice);
     ///     
     ///     assert_eq!(['a', 'b', 'c', 'd', 'e'], slice);
+    ///     assert_eq!(5, written);
     /// }
     /// ```
     fn convert_into_slice(self, slice: &mut [U]) -> usize;
@@ -225,8 +226,8 @@ where
         slice
             .iter_mut()
             .zip(self.convert_iter())
-            .map(|(dst, src)| {*dst = src; 1})
-            .sum()
+            .map(|(dst, src)| *dst = src)
+            .count()
     }
 
     #[inline]
