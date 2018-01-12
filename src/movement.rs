@@ -12,7 +12,7 @@ use absolute::Absolute;
 /// [`init`]: enum.Direction.html#variant.Init
 /// [`right`]: enum.Direction.html#variant.Right
 /// [`left`]: enum.Direction.html#variant.Left
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone, Hash)]
 pub enum Direction {
     Up,
     Down,
@@ -129,7 +129,7 @@ impl Display for Direction {
 ///     assert_eq!(Position::new(-10, 40), p3 + p2);
 /// }
 /// ```
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Copy, Clone, Hash)]
 pub struct Position<N> {
     x: N,
     y: N,
