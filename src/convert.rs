@@ -185,7 +185,7 @@ where
     /// Returns a vector of all completed conversions.
     fn convert(self) -> Vec<U>;
 
-    /// Converts the stream, and writes the items into `slice`.
+    /// Converts the stream, and writes the items into `slice`. Returns how many elements where written to the slice.
     /// 
     /// #Examples
     /// ```

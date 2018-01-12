@@ -3,3 +3,5 @@
     see https://doc.rust-lang.org/std/convert/trait.TryFrom.html .
 
 -   Better documentation and examples on the current lib.
+
+-   Add proper tests and benchmarks.
