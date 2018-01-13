@@ -113,13 +113,13 @@ where
     #[inline]
     fn try_convert_into_slice(self, slice: &mut [U]) -> Result<usize, usize> {
         let mut number_of_writes = 0;
-        for ((idx, dst), src) in slice.iter_mut().enumerate().zip(self.try_convert_iter()) {
+        for (dst, src) in slice.iter_mut().zip(self.try_convert_iter()) {
             if let Ok(converted) = src {
                 *dst = converted;
                 number_of_writes += 1;
             }
             else {
-                return Err(idx);
+                return Err(number_of_writes);
             }
         }
         Ok(number_of_writes)
