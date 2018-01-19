@@ -17,7 +17,7 @@ pub mod movement;
 pub mod reading;
 
 /// Returns a tuple, sorted by the max value.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::{sort_biggest};
@@ -42,7 +42,7 @@ pub fn sort_biggest<T: Ord>(a: T, b: T) -> (T, T) {
 }
 
 /// Returns a tuple, sorted by the min value.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::{sort_smallest};
@@ -71,7 +71,7 @@ pub fn sort_smallest<T: Ord>(a: T, b: T) -> (T, T) {
 
 /// 2 functions to 'sort' a tuple.
 /// `minmax` returns the tuple in ascending order, `maxmin` in descending order.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::MinMax;
@@ -120,7 +120,7 @@ where
 }
 
 /// Applies any given operator to any given tuple.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use(apply)]
 /// extern crate libaoc;
@@ -136,7 +136,7 @@ macro_rules! apply {
     (@inner ($oper:tt)($final:expr) ()) => { $final };
 }
 /// Subtracts all items in a tuple.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use(sub, apply)]
 /// extern crate libaoc;
@@ -150,7 +150,7 @@ macro_rules! sub {
     ($tup:tt) => (apply!(-, $tup))
 }
 /// Adds all items in a tuple.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use(add, apply)]
 /// extern crate libaoc;
@@ -164,7 +164,7 @@ macro_rules! add {
     ($tup:tt) => (apply!(+, $tup))
 }
 /// Divides all items in a tuple. Panics if divided by 0.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use(div, apply)]
 /// extern crate libaoc;
@@ -178,7 +178,7 @@ macro_rules! div {
     ($tup:tt) => (apply!(/, $tup))
 }
 /// Multiplies all items in a tuple.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use(mul, apply)]
 /// extern crate libaoc;
@@ -192,7 +192,7 @@ macro_rules! mul {
     ($tup:tt) => (apply!(*, $tup))
 }
 /// 'Remainders' all items in a tuple.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use(rem, apply)]
 /// extern crate libaoc;
@@ -208,7 +208,7 @@ macro_rules! rem {
 
 /// This macro is used to generate `noop` functions.
 /// Works only on tuples, but is great to use in functional programming when you just need to pass a `noop` function into another function.
-/// #Examples
+/// # Examples
 /// ```
 /// #[macro_use]
 /// extern crate libaoc;

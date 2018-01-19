@@ -100,7 +100,7 @@ impl Display for Direction {
 }
 
 /// A position. Great to use in maps or graphs.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::movement::{Position, ManhattenDst};
@@ -209,7 +209,7 @@ where
     /// Changes the position with `steps` based on the direction.
     /// If the direction is facing down, `y` is incremented, if the direction if facing up, `y` is decremented.
     /// If the direction is [`Direction::Init`], no update is made.
-    /// #Examples
+    /// # Examples
     /// ```
     /// extern crate libaoc;
     /// use libaoc::movement::{Position, Direction};
@@ -237,7 +237,7 @@ where
     }
 
     /// Same as [`change`], but now increments `y` when facing upwards, and decrements `y` when facing downwards.
-    /// #Examples
+    /// # Examples
     /// ```
     /// extern crate libaoc;
     /// use libaoc::movement::{Direction, Position};
@@ -266,7 +266,7 @@ where
 
     /// Check whether self and `other` are adjecent. That is, if the absolute x value and the absolute y value after subtracting `self` from `other`
     /// is either (1, 0), (0, 1) or (1, 1).
-    /// #Examples
+    /// # Examples
     /// ```
     /// extern crate libaoc;
     /// use libaoc::movement::Position;
@@ -303,7 +303,7 @@ where
     }
 
     /// Adds `steps` to y.
-    /// #Examples
+    /// # Examples
     /// ```
     /// extern crate libaoc;
     /// use libaoc::movement::Position;
@@ -398,7 +398,7 @@ impl<N> Into<(N, N)> for Position<N> {
 /// A position is either a tuple, or the struct [Position](struct.Position.html).
 /// the manhatten distance is the sum of the absolute values of a coordinate.
 ///
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::movement::{ManhattenDst, Position};

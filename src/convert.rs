@@ -2,7 +2,7 @@ use ::std::str::FromStr;
 
 /// This trait allows to convert a stream of `str`'s, into a stream or collection of type U.
 /// Return an Error when the conversion fails, but is able to produce the next value that has no Error.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// 
@@ -45,7 +45,7 @@ where
 
     /// Tries to convert a stream of T into a slice of U.
     /// On an error, returns how many items where converted.
-    /// #Examples]
+    /// # Examples
     /// 
     /// ```
     /// extern crate libaoc;
@@ -113,7 +113,7 @@ where
 
 /// This trait allows to convert a stream with items of type T into a stream or collection with items of type U.
 /// 
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// 
@@ -151,7 +151,7 @@ where
 
     /// Converts the stream, and writes the items into `slice`. Returns how many elements where written to the slice.
     /// 
-    /// #Examples
+    /// # Examples
     /// ```
     /// extern crate libaoc;
     /// 
@@ -200,7 +200,10 @@ where
     }
 }
 
-/// #Examples
+/// This macro allows to create a function that takes any Iterator<Item = T>, and converts it into
+/// an array with elements of type U. See the examples.
+/// 
+/// # Examples
 /// ```
 /// #[macro_use]
 /// extern crate libaoc;
@@ -249,20 +252,37 @@ macro_rules! convert {
         }
     )
 }
-
-///```
-/// #[macro_use]
+/// This macro makes it easy to convert an Iterator into an array.
+/// The `type` of the array has to be specified when this macro is called.
+/// 
+/// The function that get's build uses mem::unitialized to prevent unnecessary allocation,
+/// however if the Iterator has less items than the lenght of the array, this means there is still
+/// unitialized memory. In this case, the function will return an error, and drop the array that was build.
+/// 
+/// # Examples
+/// ```
+/// #[macro_use(convert_func)]
 /// extern crate libaoc;
-/// use libaoc::convert::Convert;
 /// use libaoc::movement::Position;
+/// use libaoc::convert::Convert;
 /// fn main() {
-///     convert_func!(IntoArr, into_arr -> [Position<usize>; 3]);
+///     convert_func!(ArrayConvert, into_array -> [Position<usize>; 3]);
+///     convert_func!(extend ArrayConvert with _ArrayConvert, into_array4 -> [Position<usize>; 4]);
 ///     let tuples = vec![(1, 2), (3, 4), (5, 6)];
 ///     
 ///     let positions: [Position<usize>; 3] = [Position::new(1, 2), Position::new(3, 4), Position::new(5, 6)];
-///     assert_eq!(positions, tuples.into_iter().into_arr().unwrap());
+///     assert_eq!(positions, tuples.into_iter().into_array().unwrap());
+/// 
+///     let positionss: [Position<usize>; 4] = [Position::new(0usize, 0), Position::new(1, 1), Position::new(2, 2), Position::new(3, 3)];
+///     let tups: Vec<(usize, usize)> = vec![(0, 0), (1, 1), (2, 2), (3, 3)];
+///     assert_eq!(positionss, tups.into_iter().into_array4().unwrap());
 /// }
 /// ```
+
+//@TODO:
+//  Recursive definition,
+//  Pherhaps return an error if the Iterator has more items than the array,
+//  Or return the items left from the Iterator as an Iterator.
 #[macro_export]
 macro_rules! convert_func {
     ($traitname:ident, $funcname:ident -> [$tgt:ty; $num:tt]) => {
@@ -275,6 +295,42 @@ macro_rules! convert_func {
         where
             I: Convert<T, $tgt, I> + Iterator<Item = T>,
             $tgt: From<T>,
+        {
+            fn $funcname(self) -> Result<[$tgt; $num], &'static str> {
+                unsafe {
+                    let mut arr: [ $tgt ; $num ] = ::std::mem::uninitialized();
+                    let mut filled = 0;
+
+                    //fill the array with items
+                    for (dst, src) in arr.iter_mut().zip(self.convert_iter()) {
+                        ::std::ptr::write(dst, src);
+                        filled += 1;
+                    }
+                    
+                    //if something went wrong, clean up!
+                    if filled != $num {
+
+                        //drop the items
+                        for i in 0..filled {
+                            ::std::ptr::drop_in_place(&mut arr[i]);
+                        }
+
+                        //forget the array
+                        ::std::mem::forget(arr);
+                        Err("there was a problem converting.")
+                    }
+                    else {
+                        Ok(arr)
+                    }
+                }
+            }
+        } 
+    };
+    (extend $traitname:ident with $newname:ident, $funcname:ident -> [$tgt:ty; $num:tt]) => {
+        pub trait $newname<T, I>: $traitname + Convert<T, $tgt, I> + Sized
+        where
+            $tgt: From<T>,
+            I: Iterator<Item = T>
         {
             fn $funcname(self) -> Result<[$tgt; $num], &'static str> {
                 unsafe {
@@ -303,6 +359,11 @@ macro_rules! convert_func {
                     }
                 }
             }
-        } 
-    };
+        }
+        impl <T, I>$newname<T, I> for I
+        where
+            I: $traitname + Iterator<Item = T>,
+            $tgt: From<T>
+        {}
+    }
 }

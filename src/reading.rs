@@ -10,7 +10,7 @@ fn into_buf_reader<S: AsRef<OsStr>>(s: S) -> Result<BufReader<File>, io::Error> 
     Ok(BufReader::new(f))
 }
 /// Opens a file, an reads it to whatever type it was called on.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::reading::ReadFile;

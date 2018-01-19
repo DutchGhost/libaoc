@@ -1,5 +1,5 @@
 /// A trait to get the absolute value of a number.
-/// #Examples
+/// # Examples
 /// ```
 /// extern crate libaoc;
 /// use libaoc::absolute::Absolute;
