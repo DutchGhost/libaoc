@@ -1,10 +1,7 @@
 use ::std::str::FromStr;
-use ::std::fmt;
 
 /// This trait allows to convert a stream of `str`'s, into a stream or collection of type U.
-/// All safe versions return an Error when the conversion fails,
-/// the unsafe versions will panic instead.
-/// The unsafe versions are not concidered faster, but they safe one from matching or unwrapping the result.
+/// Return an Error when the conversion fails, but is able to produce the next value that has no Error.
 /// #Examples
 /// ```
 /// extern crate libaoc;
@@ -43,9 +40,6 @@ where
     /// The Iterator that gets returned from [try_convert_iter()](trait.TryConvert.html#tymethod.try_convert_iter)
     type Iterable: Iterator<Item = Result<U, Self::Error>>;
 
-    /// The Iterator that gets returned from [unsafe_convert_iter](trait.TryConvert.html#tymethod.unsafe_convert_iter)
-    type UnsafeIterable: Iterator <Item = U>;
-
     /// On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.
     fn try_convert(self) -> Result<Vec<U>, Self::Error>;
 
@@ -79,20 +73,6 @@ where
     
     /// Returns an iterator over the converted items. Returns an error if an item can not be converted. Continue's after the error.
     fn try_convert_iter(self) -> Self::Iterable;
-
-    /// On succes, returns a vector of all completed conversions.
-    /// #Panic
-    /// Panics when an error occures.
-    unsafe fn unsafe_convert(self) -> Vec<U>
-    where
-        Self::Error: ::std::fmt::Debug;
-    
-    /// Returns an iterator over the converted items.
-    /// #Panic
-    /// Panics when an error occures.
-    unsafe fn unsafe_convert_iter(self) -> Self::UnsafeIterable
-    where
-        Self::Error: fmt::Debug;
 }
 
 impl<U, S, I> TryConvert<U, S, I> for I
@@ -103,7 +83,6 @@ where
 {   
     type Error = <U as FromStr>::Err;
     type Iterable = ::std::iter::Map<I, fn(S) -> Result<U, Self::Error>>;
-    type UnsafeIterable = ::std::iter::Map<I, fn(S) -> U>;
 
     #[inline]
     fn try_convert(self) -> Result<Vec<U>, Self::Error> {
@@ -129,23 +108,8 @@ where
     fn try_convert_iter(self) -> Self::Iterable {
         self.map(|item| item.as_ref().parse())
     }
-
-    #[inline]
-    unsafe fn unsafe_convert(self) -> Vec<U>
-    where
-        Self::Error: fmt::Debug,
-    {
-        self.unsafe_convert_iter().collect()
-    }
-
-    #[inline]
-    unsafe fn unsafe_convert_iter(self) -> Self::UnsafeIterable
-    where
-        Self::Error: fmt::Debug
-    {
-        self.map(|item| item.as_ref().parse().unwrap())
-    }
 }
+
 
 /// This trait allows to convert a stream with items of type T into a stream or collection with items of type U.
 /// 
