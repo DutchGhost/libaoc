@@ -193,9 +193,116 @@ where
             .map(|(dst, src)| *dst = src)
             .count()
     }
-
+    
     #[inline]
     fn convert_iter(self) -> Self::Iterable {
         self.map(move |item| U::from(item))
     }
+}
+
+/// #Examples
+/// ```
+/// #[macro_use]
+/// extern crate libaoc;
+/// 
+/// use libaoc::movement::Position;
+///
+/// fn main() {
+///     let tup1 = (0, 0);
+///     let tup2 = (1, 1);
+///     let tup3 = (2, 2);
+/// 
+///     let tuples = vec![tup1, tup2, tup3];
+/// 
+///     let arr = convert!(tuples.into_iter() => [Position<i64>; 2]);
+///     assert_eq!(Ok([Position::new(0, 0), Position::new(1, 1)]), arr);
+/// }
+/// ```
+#[macro_export]
+macro_rules! convert {
+    ($iter:expr => [$tgt:ty; $num:tt]) => (
+        {
+            unsafe {
+                let mut arr: [ $tgt ; $num ] = std::mem::uninitialized();
+                let mut filled = 0;
+                
+                for (dst, src) in arr.iter_mut().zip($iter) {
+                    ::std::ptr::write(dst, src.into());
+                    filled += 1;
+                }
+                
+                if filled != $num {
+
+                    // Not all positions were filled. Drop the filled positions
+                    // manually and forget the array to prevent the
+                    // uninitailized memory from being dropped.
+                    for i in 0..filled {
+                        ::std::ptr::drop_in_place(&mut arr[i]);
+                    }
+                    ::std::mem::forget(arr);
+                    
+                    Err("Too few elements")
+                } else {
+                    Ok(arr)
+                }
+            }
+        }
+    )
+}
+
+///```
+/// #[macro_use]
+/// extern crate libaoc;
+/// use libaoc::convert::Convert;
+/// use libaoc::movement::Position;
+/// fn main() {
+///     convert_func!(IntoArr, into_arr -> [Position<usize>; 3]);
+///     let tuples = vec![(1, 2), (3, 4), (5, 6)];
+///     
+///     let positions: [Position<usize>; 3] = [Position::new(1, 2), Position::new(3, 4), Position::new(5, 6)];
+///     assert_eq!(positions, tuples.into_iter().into_arr().unwrap());
+/// }
+/// ```
+#[macro_export]
+macro_rules! convert_func {
+    ($traitname:ident, $funcname:ident -> [$tgt:ty; $num:tt]) => {
+        pub trait $traitname
+        {
+            fn $funcname(self) -> Result<[$tgt; $num], &'static str>;
+        }
+
+        impl <T, I>$traitname for I
+        where
+            I: Convert<T, $tgt, I> + Iterator<Item = T>,
+            $tgt: From<T>,
+        {
+            fn $funcname(self) -> Result<[$tgt; $num], &'static str> {
+                unsafe {
+                    let mut arr: [ $tgt ; $num ] = ::std::mem::uninitialized();
+                    let mut filled = 0;
+                
+                    for (dst, src) in arr.iter_mut().zip(self.convert_iter()) {
+                        ::std::ptr::write(dst, src);
+                        filled += 1;
+                    }
+                    
+                    //if something went wrong, clean up!
+                    if filled != $num {
+
+                        //drop the items
+                        for i in 0..filled {
+                            ::std::ptr::drop_in_place(&mut arr[i]);
+                        }
+
+                        //forget the array
+                        ::std::mem::forget(arr);
+                        Err("there was a problem converting.")
+                    }
+                    else {
+                        Ok(arr)
+                    }
+                }
+            }
+        } 
+    };
 }
