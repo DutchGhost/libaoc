@@ -225,7 +225,7 @@ where
 macro_rules! convert {
     ($iter:expr => [$tgt:ty; $num:tt]) => (
         {   
-            use ::std::mem;;
+            use ::std::mem;
 
             struct PartialArray {
                 data: mem::ManuallyDrop<[$tgt; $num]>,
@@ -248,7 +248,7 @@ macro_rules! convert {
                     mem::ManuallyDrop::into_inner(self.data)
                 }
             }
-            
+
             unsafe {
                 let mut arr: [ $tgt ; $num ] = mem::uninitialized();
                 let mut filled = 0;
