@@ -16,6 +16,9 @@ pub mod movement;
 #[cfg(feature = "readfile")]
 pub mod reading;
 
+#[cfg(test)]
+mod tests;
+
 /// Returns a tuple, sorted by the max value.
 /// # Examples
 /// ```

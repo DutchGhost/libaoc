@@ -199,17 +199,20 @@ where
         self.map(move |item| U::from(item))
     }
 }
-
-/// This macro allows to create a function that takes any Iterator<Item = T>, and converts it into
-/// an array with elements of type U. See the examples.
+/// This macro makes it easy to convert an Iterator into an array.
+/// The `type` of the array has to be specified when this macro is called.
 /// 
+/// The array that get's build uses mem::unitialized to prevent unnecessary allocation,
+/// however if the Iterator has less items than the lenght of the array, this means there is still
+/// unitialized memory. In this case, the macro will return an error, and drop the array that was build.
 /// # Examples
 /// ```
 /// #[macro_use]
 /// extern crate libaoc;
 /// 
 /// use libaoc::movement::Position;
-///
+/// use libaoc::convert::Convert;
+/// 
 /// #[derive(Debug, PartialEq)]
 /// struct noncopy{item: i64}
 /// impl From<i64> for noncopy {
@@ -221,12 +224,12 @@ where
 /// 
 ///     let ns = vec![1, 2, 3];
 /// 
-///     let arr = convert!(ns.into_iter() => [noncopy; 2]);
+///     let arr = arraycollect!(ns.into_iter().convert_iter() => [noncopy; 2]);
 ///     assert_eq!(Ok([noncopy{item: 1}, noncopy{item: 2}]), arr);
 /// }
 /// ```
 #[macro_export]
-macro_rules! convert {
+macro_rules! arraycollect {
     ($iter:expr => [$tgt:ty; $num:tt]) => (
         {   
             use ::std::mem;
@@ -254,13 +257,11 @@ macro_rules! convert {
                     }
                 }
 
-                fn fill_array<T, I: Iterator<Item = T>>(mut self, iter: I) -> Result<[$tgt; $num], &'static str>
-                where
-                    $tgt: From<T>
+                fn fill_array<I: Iterator<Item = $tgt>>(mut self, iter: I) -> Result<[$tgt; $num], &'static str>
                 {
                     for (dst, src) in self.data.iter_mut().zip(iter) {
                         unsafe {
-                            ::std::ptr::write(dst, src.into());
+                            ::std::ptr::write(dst, src);
                         }
                         self.fill += 1;
                     }
@@ -289,133 +290,4 @@ macro_rules! convert {
             array.fill_array($iter)
         }
     )
-}
-
-#[derive(Debug, PartialEq)]
-struct noncopy{item: i64}
-impl From<i64> for noncopy {
-    fn from(num: i64) -> noncopy {
-        noncopy{item: num}
-    }
-}
-
-fn blah() {
-    let _ = convert!((0..3) => [noncopy; 2]);
-
-}
-
-/// This macro makes it easy to convert an Iterator into an array.
-/// The `type` of the array has to be specified when this macro is called.
-/// 
-/// The function that get's build uses mem::unitialized to prevent unnecessary allocation,
-/// however if the Iterator has less items than the lenght of the array, this means there is still
-/// unitialized memory. In this case, the function will return an error, and drop the array that was build.
-/// 
-/// # Examples
-/// ```
-/// #[macro_use(convert_func)]
-/// extern crate libaoc;
-/// use libaoc::movement::Position;
-/// use libaoc::convert::Convert;
-/// fn main() {
-///     convert_func!(ArrayConvert, into_array -> [Position<usize>; 3]);
-///     convert_func!(extend ArrayConvert with _ArrayConvert, into_array4 -> [Position<usize>; 4]);
-///     let tuples = vec![(1, 2), (3, 4), (5, 6)];
-///     
-///     let positions: [Position<usize>; 3] = [Position::new(1, 2), Position::new(3, 4), Position::new(5, 6)];
-///     assert_eq!(positions, tuples.into_iter().into_array().unwrap());
-/// 
-///     let positionss: [Position<usize>; 4] = [Position::new(0usize, 0), Position::new(1, 1), Position::new(2, 2), Position::new(3, 3)];
-///     let tups: Vec<(usize, usize)> = vec![(0, 0), (1, 1), (2, 2), (3, 3)];
-///     assert_eq!(positionss, tups.into_iter().into_array4().unwrap());
-/// }
-/// ```
-
-//@TODO:
-//  Recursive definition,
-//  Pherhaps return an error if the Iterator has more items than the array,
-//  Or return the items left from the Iterator as an Iterator.
-#[macro_export]
-macro_rules! convert_func {
-    ($traitname:ident, $funcname:ident -> [$tgt:ty; $num:tt]) => {
-        pub trait $traitname
-        {
-            fn $funcname(self) -> Result<[$tgt; $num], &'static str>;
-        }
-
-        impl <T, I>$traitname for I
-        where
-            I: Convert<T, $tgt, I> + Iterator<Item = T>,
-            $tgt: From<T>,
-        {
-            fn $funcname(self) -> Result<[$tgt; $num], &'static str> {
-                unsafe {
-                    let mut arr: [ $tgt ; $num ] = ::std::mem::uninitialized();
-                    let mut filled = 0;
-
-                    //fill the array with items
-                    for (dst, src) in arr.iter_mut().zip(self.convert_iter()) {
-                        ::std::ptr::write(dst, src);
-                        filled += 1;
-                    }
-                    
-                    //if something went wrong, clean up!
-                    if filled != $num {
-
-                        //drop the items
-                        for i in 0..filled {
-                            ::std::ptr::drop_in_place(&mut arr[i]);
-                        }
-
-                        //forget the array
-                        ::std::mem::forget(arr);
-                        Err("there was a problem converting.")
-                    }
-                    else {
-                        Ok(arr)
-                    }
-                }
-            }
-        } 
-    };
-    (extend $traitname:ident with $newname:ident, $funcname:ident -> [$tgt:ty; $num:tt]) => {
-        pub trait $newname<T, I>: $traitname + Convert<T, $tgt, I> + Sized
-        where
-            $tgt: From<T>,
-            I: Iterator<Item = T>
-        {
-            fn $funcname(self) -> Result<[$tgt; $num], &'static str> {
-                unsafe {
-                    let mut arr: [ $tgt ; $num ] = ::std::mem::uninitialized();
-                    let mut filled = 0;
-                
-                    for (dst, src) in arr.iter_mut().zip(self.convert_iter()) {
-                        ::std::ptr::write(dst, src);
-                        filled += 1;
-                    }
-                    
-                    //if something went wrong, clean up!
-                    if filled != $num {
-
-                        //drop the items
-                        for i in 0..filled {
-                            ::std::ptr::drop_in_place(&mut arr[i]);
-                        }
-
-                        //forget the array
-                        ::std::mem::forget(arr);
-                        Err("there was a problem converting.")
-                    }
-                    else {
-                        Ok(arr)
-                    }
-                }
-            }
-        }
-        impl <T, I>$newname<T, I> for I
-        where
-            I: $traitname + Iterator<Item = T>,
-            $tgt: From<T>
-        {}
-    }
 }
