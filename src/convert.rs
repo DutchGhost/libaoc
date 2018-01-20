@@ -237,50 +237,54 @@ macro_rules! convert {
                     if !mem::needs_drop::<$tgt>() {
                         return;
                     }
-                    unsafe {::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);}
+                    unsafe {
+                        ::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);
+                    }
                 }
             }
 
             impl PartialArray {
-                
+                fn new() -> PartialArray {
+                    unsafe {
+                        PartialArray {
+                            data: mem::ManuallyDrop::new(mem::uninitialized()),
+                            fill: 0,
+                        }
+                    }
+                }
+
+                fn fill_array<T, I: Iterator<Item = T>>(mut self, iter: I) -> Result<[$tgt; $num], &'static str>
+                where
+                    $tgt: From<T>
+                {
+                    for (dst, src) in self.data.iter_mut().zip(iter) {
+                        unsafe {
+                            ::std::ptr::write(dst, src.into());
+                        }
+                        self.fill += 1;
+                    }
+
+                    //if the number of items filled is not equal to the number of items that should have been written,
+                    //return an error.
+                    if self.fill != $num {
+                        Err("Not enough items")
+                    }
+                    else {
+                        Ok(self.finish())
+                    }
+                }
                 #[inline]
                 fn finish(self) -> [$tgt; $num] {
                     mem::ManuallyDrop::into_inner(self.data)
                 }
             }
 
-            unsafe {
-                let mut arr: [ $tgt ; $num ] = mem::uninitialized();
-                let mut filled = 0;
-                
-                for (dst, src) in arr.iter_mut().zip($iter) {
-                    ::std::ptr::write(dst, src.into());
-                    filled += 1;
-                }
-                
-                if filled != $num {
-
-                    // Not all positions were filled. Drop the filled positions
-                    // manually and forget the array to prevent the
-                    // uninitailized memory from being dropped.
-                    for i in 0..filled {
-                        ::std::ptr::drop_in_place(&mut arr[i]);
-                    }
-                    ::std::mem::forget(arr);
-                    
-                    Err("Too few elements")
-                } else {
-                    Ok(arr)
-                }
-            }
+            let array = PartialArray::new();
+            array.fill_array($iter)
         }
     )
 }
 
-fn blah() {
-    let i = vec![1, 2, 3];
-    convert!(i.into_iter() => [i64; 3]);
-}
 /// This macro makes it easy to convert an Iterator into an array.
 /// The `type` of the array has to be specified when this macro is called.
 /// 
