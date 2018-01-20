@@ -224,9 +224,33 @@ where
 #[macro_export]
 macro_rules! convert {
     ($iter:expr => [$tgt:ty; $num:tt]) => (
-        {
+        {   
+            use ::std::mem;;
+
+            struct PartialArray {
+                data: mem::ManuallyDrop<[$tgt; $num]>,
+                fill: usize,
+            }
+
+            impl Drop for PartialArray {
+                fn drop(&mut self) {
+                    for i in 0..self.fill {
+                        unsafe {::std::ptr::drop_in_place(&mut self.data[i]);}
+                    }
+
+                    mem::forget(self.data);
+                }
+            }
+            impl PartialArray {
+                
+                #[inline]
+                fn finish(self) -> [$tgt; $num] {
+                    mem::ManuallyDrop::into_inner(self.data)
+                }
+            }
+            
             unsafe {
-                let mut arr: [ $tgt ; $num ] = std::mem::uninitialized();
+                let mut arr: [ $tgt ; $num ] = mem::uninitialized();
                 let mut filled = 0;
                 
                 for (dst, src) in arr.iter_mut().zip($iter) {
@@ -251,6 +275,11 @@ macro_rules! convert {
             }
         }
     )
+}
+
+fn blah() {
+    let i = vec![1, 2, 3];
+    convert!(i.into_iter() => [i64; 3]);
 }
 /// This macro makes it easy to convert an Iterator into an array.
 /// The `type` of the array has to be specified when this macro is called.
