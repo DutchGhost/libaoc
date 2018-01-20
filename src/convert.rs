@@ -210,15 +210,19 @@ where
 /// 
 /// use libaoc::movement::Position;
 ///
+/// #[derive(Debug, PartialEq)]
+/// struct noncopy{item: i64}
+/// impl From<i64> for noncopy {
+///     fn from(num: i64) -> noncopy {
+///         noncopy{item: num}
+///     }
+/// }
 /// fn main() {
-///     let tup1 = (0, 0);
-///     let tup2 = (1, 1);
-///     let tup3 = (2, 2);
 /// 
-///     let tuples = vec![tup1, tup2, tup3];
+///     let ns = vec![1, 2, 3];
 /// 
-///     let arr = convert!(tuples.into_iter() => [Position<i64>; 2]);
-///     assert_eq!(Ok([Position::new(0, 0), Position::new(1, 1)]), arr);
+///     let arr = convert!(ns.into_iter() => [noncopy; 2]);
+///     assert_eq!(Ok([noncopy{item: 1}, noncopy{item: 2}]), arr);
 /// }
 /// ```
 #[macro_export]
@@ -234,9 +238,6 @@ macro_rules! convert {
 
             impl Drop for PartialArray {
                 fn drop(&mut self) {
-                    if !mem::needs_drop::<$tgt>() {
-                        return;
-                    }
                     unsafe {
                         ::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);
                     }
@@ -274,8 +275,13 @@ macro_rules! convert {
                     }
                 }
                 #[inline]
-                fn finish(self) -> [$tgt; $num] {
-                    mem::ManuallyDrop::into_inner(self.data)
+                fn finish(mut self) -> [$tgt; $num] {
+                    unsafe {
+                        let r = ::std::ptr::read(&mut self.data);
+                        let ret = mem::ManuallyDrop::into_inner(r);
+                        mem::forget(self);
+                        ret
+                    }
                 }
             }
 
@@ -283,6 +289,19 @@ macro_rules! convert {
             array.fill_array($iter)
         }
     )
+}
+
+#[derive(Debug, PartialEq)]
+struct noncopy{item: i64}
+impl From<i64> for noncopy {
+    fn from(num: i64) -> noncopy {
+        noncopy{item: num}
+    }
+}
+
+fn blah() {
+    let _ = convert!((0..3) => [noncopy; 2]);
+
 }
 
 /// This macro makes it easy to convert an Iterator into an array.
