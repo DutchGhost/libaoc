@@ -234,6 +234,9 @@ macro_rules! convert {
 
             impl Drop for PartialArray {
                 fn drop(&mut self) {
+                    if ! mem::needs_drop::<$tgt>() {
+                        return;
+                    }
                     for i in 0..self.fill {
                         unsafe {::std::ptr::drop_in_place(&mut self.data[i]);}
                     }
