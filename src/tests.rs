@@ -1,5 +1,4 @@
-#[macro_use]
-use convert;
+use convert::Convert;
 pub mod test_arraycollect {
     
     #[macro_use]
