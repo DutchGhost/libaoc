@@ -239,15 +239,8 @@ macro_rules! arraycollect {
                 fill: usize,
             }
 
-            impl Drop for PartialArray {
-                fn drop(&mut self) {
-                    unsafe {
-                        ::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);
-                    }
-                }
-            }
-
             impl PartialArray {
+                #[inline]
                 fn new() -> PartialArray {
                     unsafe {
                         PartialArray {
@@ -257,6 +250,7 @@ macro_rules! arraycollect {
                     }
                 }
 
+                #[inline]
                 fn fill_array<I: Iterator<Item = $tgt>>(mut self, iter: I) -> Result<[$tgt; $num], &'static str>
                 {
                     for (dst, src) in self.data.iter_mut().zip(iter) {
@@ -278,10 +272,19 @@ macro_rules! arraycollect {
                 #[inline]
                 fn finish(mut self) -> [$tgt; $num] {
                     unsafe {
-                        let r = ::std::ptr::read(&mut self.data);
-                        let ret = mem::ManuallyDrop::into_inner(r);
+                        let rd = ::std::ptr::read(&mut self.data);
+                        let ret = mem::ManuallyDrop::into_inner(rd);
                         mem::forget(self);
                         ret
+                    }
+                }
+            }
+
+            impl Drop for PartialArray {
+                #[inline]
+                fn drop(&mut self) {
+                    unsafe {
+                        ::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);
                     }
                 }
             }
