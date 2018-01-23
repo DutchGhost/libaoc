@@ -4,9 +4,6 @@ use absolute::Absolute;
 
 /// An enum to represent a direction.
 /// Is great to use in maps, or when 'following' some kind of line.
-/// Also supports an init variant.
-/// When the current variant is [`init`], using [`turn_right`] returns the variant [`right`].
-/// When the current variant is [`init`], using [`turn_left`] returns the variant [`left`].
 /// [`turn_right`]: enum.Direction.html#method.turn_right
 /// [`turn_left`]: enum.Direction.html#method.turn_left
 /// [`init`]: enum.Direction.html#variant.Init
@@ -18,7 +15,6 @@ pub enum Direction {
     Down,
     Right,
     Left,
-    Init,
 }
 
 impl Direction {
@@ -46,12 +42,6 @@ impl Direction {
         Direction::Down
     }
 
-    /// Initializes a direction that has no facing yet.
-    #[inline]
-    pub fn init_init() -> Direction {
-        Direction::Init
-    }
-
     /// turns the direction to the right.
     #[inline]
     pub fn turn_right(self) -> Direction {
@@ -60,7 +50,6 @@ impl Direction {
             Direction::Right => Direction::Down,
             Direction::Down => Direction::Left,
             Direction::Left => Direction::Up,
-            Direction::Init => Direction::Right,
         }
     }
 
@@ -72,23 +61,17 @@ impl Direction {
             Direction::Left => Direction::Down,
             Direction::Down => Direction::Right,
             Direction::Right => Direction::Up,
-            Direction::Init => Direction::Left,
         }
     }
 
     /// Reverses the current direction.
-    /// #Panic
-    /// Panics whenever the current direction is [`Init`](enum.Direction.html#variant.Init).
     #[inline]
     pub fn reverse(self) -> Direction {
-        assert!(self != Direction::Init, "Reversing a Direction::Init impossible!");
-        
         match self {
             Direction::Up => Direction::Down,
             Direction::Down => Direction::Up,
             Direction::Left => Direction::Right,
             Direction::Right => Direction::Left,
-            Direction::Init => unreachable!(),
         }
     }
 }
@@ -136,6 +119,7 @@ pub struct Position<N> {
     x: N,
     y: N,
 }
+
 macro_rules! binops {
     (impl $imp:ident, $method:ident for $pos:ident, $oper:tt) => {
 
@@ -208,7 +192,6 @@ where
 
     /// Changes the position with `steps` based on the direction.
     /// If the direction is facing down, `y` is incremented, if the direction if facing up, `y` is decremented.
-    /// If the direction is [`Direction::Init`], no update is made.
     /// # Examples
     /// ```
     /// extern crate libaoc;
@@ -224,7 +207,6 @@ where
     /// }
     /// ```
     ///
-    /// [`Direction::Init`]: enum.Direction.html#variant.Init
     #[inline]
     pub fn change(&mut self, direction: &Direction, steps: N) {
         match direction {
@@ -232,7 +214,6 @@ where
             &Direction::Down => self.y += steps,
             &Direction::Right => self.x += steps,
             &Direction::Left => self.x -= steps,
-            &Direction::Init => return,
         }
     }
 
@@ -260,7 +241,6 @@ where
             &Direction::Down => self.y -= steps,
             &Direction::Right => self.x += steps,
             &Direction::Left => self.x -= steps,
-            &Direction::Init => return,
         }
     }
 
