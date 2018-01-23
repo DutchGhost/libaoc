@@ -199,6 +199,7 @@ where
         self.map(move |item| U::from(item))
     }
 }
+
 /// This macro makes it easy to convert an Iterator into an array.
 /// The `type` of the array has to be specified when this macro is called.
 ///
@@ -228,6 +229,30 @@ where
 ///     assert_eq!(Ok([noncopy{item: 1}, noncopy{item: 2}]), arr);
 /// }
 /// ```
+
+#[derive(Debug, Eq, PartialEq, Ord, PartialOrd)]
+pub enum FillError {
+    FillError,
+}
+
+impl ::std::error::Error for FillError {
+
+    #[inline]
+    fn description(&self) -> &str {
+        match self {
+            &FillError::FillError => "The array was partially ({} of {} items) filled, and therefore dropped."
+        }
+    }
+}
+
+impl ::std::fmt::Display for FillError {
+
+    #[inline]
+    fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        write!(f, "{}", self)
+    }
+}
+
 #[macro_export]
 macro_rules! arraycollect {
     ($iter:expr => [$tgt:ty; $num:tt]) => (
@@ -251,7 +276,7 @@ macro_rules! arraycollect {
                 }
 
                 #[inline]
-                fn fill_array<I: Iterator<Item = $tgt>>(mut self, iter: I) -> Result<[$tgt; $num], &'static str>
+                fn fill_array<I: Iterator<Item = $tgt>>(mut self, iter: I) -> Result<[$tgt; $num], $crate::convert::FillError>
                 {
                     for (dst, src) in self.data.iter_mut().zip(iter) {
                         unsafe {
@@ -263,7 +288,7 @@ macro_rules! arraycollect {
                     //if the number of items filled is not equal to the number of items that should have been written,
                     //return an error.
                     if self.fill != $num {
-                        Err("Not enough items")
+                        Err($crate::convert::FillError::FillError)
                     }
                     else {
                         Ok(self.finish())
