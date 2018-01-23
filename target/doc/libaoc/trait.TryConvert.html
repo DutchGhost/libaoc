@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `TryConvert` trait in crate `libaoc`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, TryConvert">
+
+    <title>libaoc::TryConvert - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc trait">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Trait TryConvert</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.try_convert">try_convert</a><a href="#tymethod.unsafe_convert">unsafe_convert</a><a href="#tymethod.try_convert_iter">try_convert_iter</a><a href="#tymethod.unsafe_convert_iter">unsafe_convert_iter</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='index.html'>libaoc</a></p><script>window.sidebarCurrent = {name: 'TryConvert', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>libaoc</a>::<wbr><a class="trait" href=''>TryConvert</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/libaoc/lib.rs.html#216-241' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait TryConvert&lt;N, S, I&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;N: <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html" title="trait core::convert::AsRef">AsRef</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;I: <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html" title="trait core::iter::iterator::Iterator">Iterator</a>&lt;Item = S&gt;,&nbsp;</span>{
+    fn <a href='#tymethod.try_convert' class='fnname'>try_convert</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;N&gt;, &lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>&gt;;
+<div class='item-spacer'></div>    unsafe fn <a href='#tymethod.unsafe_convert' class='fnname'>unsafe_convert</a>(self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;N&gt;<br>&nbsp;&nbsp;&nbsp; <span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>: <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a></span>;
+<div class='item-spacer'></div>    fn <a href='#tymethod.try_convert_iter' class='fnname'>try_convert_iter</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self<br>&nbsp;&nbsp;&nbsp;&nbsp;) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/iter/struct.Map.html" title="struct core::iter::Map">Map</a>&lt;I, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.fn.html">fn</a>(_: S) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;N, &lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>&gt;&gt;;
+<div class='item-spacer'></div>    unsafe fn <a href='#tymethod.unsafe_convert_iter' class='fnname'>unsafe_convert_iter</a>(self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/iter/struct.Map.html" title="struct core::iter::Map">Map</a>&lt;I, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.fn.html">fn</a>(_: S) -&gt; N&gt;<br>&nbsp;&nbsp;&nbsp; <span class="where">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>: <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a></span>;
+}</pre><div class='docblock'><p>Takes any Iterator, where the items implement AsRef<str>.
+Returns a Vec<N>, where N implements FromStr.
+Returns an Error if an error occured.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class="rust rust-example-rendered">
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libaoc</span>;
+<span class="kw">use</span> <span class="ident">libaoc</span>::{<span class="ident">TryConvert</span>};
+
+<span class="kw">fn</span> <span class="ident">main</span> () {
+    <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="string">&quot;1, 2, 3, 4, 5&quot;</span>;
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>], <span class="ident">s</span>.<span class="ident">split</span>(<span class="string">&quot;, &quot;</span>).<span class="ident">try_convert</span>().<span class="ident">unwrap</span>());
+
+    <span class="kw">let</span> <span class="ident">s</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">from</span>(<span class="string">&quot;1\n2\n3\n4\n5\n6&quot;</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>], <span class="ident">s</span>.<span class="ident">lines</span>().<span class="ident">try_convert</span>().<span class="ident">unwrap</span>());
+
+    <span class="kw">let</span> <span class="ident">my_str</span> <span class="op">=</span> <span class="string">&quot;1, 2, 3,4, 5&quot;</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">iter</span> <span class="op">=</span> <span class="ident">my_str</span>.<span class="ident">split</span>(<span class="string">&quot;, &quot;</span>).<span class="ident">try_convert_iter</span>();
+
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="number">1</span>)), <span class="ident">iter</span>.<span class="ident">next</span>());
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="number">2</span>)), <span class="ident">iter</span>.<span class="ident">next</span>());
+ 
+    <span class="comment">//the next would be 3, but that gives an error. assert_NE.</span>
+    <span class="macro">assert_ne</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="number">3</span>)), <span class="ident">iter</span>.<span class="ident">next</span>());
+ 
+    <span class="comment">//due to the split call, 4 isn&#39;t part of the stream, so next one is 5.</span>
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="prelude-val">Some</span>(<span class="prelude-val">Ok</span>(<span class="number">5</span>)), <span class="ident">iter</span>.<span class="ident">next</span>());
+}</pre>
+</div>
+            <h2 id='required-methods' class='small-section-header'>
+              Required Methods<a href='#required-methods' class='anchor'></a>
+            </h2>
+            <div class='methods'>
+        <h3 id='tymethod.try_convert' class='method'><span id='try_convert.v' class='invisible'><code>fn <a href='#tymethod.try_convert' class='fnname'>try_convert</a>(self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;N&gt;, &lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>&gt;</code></span></h3><div class='docblock'><p>On succes, returns a vector of all completed conversions. When an error occures, returns an error instead.</p>
+</div><h3 id='tymethod.unsafe_convert' class='method'><span id='unsafe_convert.v' class='invisible'><code>unsafe fn <a href='#tymethod.unsafe_convert' class='fnname'>unsafe_convert</a>(self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;N&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>: <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a>,&nbsp;</span></code></span></h3><div class='docblock'><p>On succes, returns a vector of all completed conversions.</p>
+
+<h1 id='panic' class='section-header'><a href='#panic'>Panic</a></h1>
+<p>Panics when an error occures.</p>
+</div><h3 id='tymethod.try_convert_iter' class='method'><span id='try_convert_iter.v' class='invisible'><code>fn <a href='#tymethod.try_convert_iter' class='fnname'>try_convert_iter</a>(self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/iter/struct.Map.html" title="struct core::iter::Map">Map</a>&lt;I, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.fn.html">fn</a>(_: S) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;N, &lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>&gt;&gt;</code></span></h3><div class='docblock'><p>Returns an iterator over the converted items. Returns an error if an item can not be converted. Continue&#39;s after the error.</p>
+</div><h3 id='tymethod.unsafe_convert_iter' class='method'><span id='unsafe_convert_iter.v' class='invisible'><code>unsafe fn <a href='#tymethod.unsafe_convert_iter' class='fnname'>unsafe_convert_iter</a>(self) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/core/iter/struct.Map.html" title="struct core::iter::Map">Map</a>&lt;I, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.fn.html">fn</a>(_: S) -&gt; N&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;&lt;N as <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>&gt;::<a class="type" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html#associatedtype.Err" title="type core::str::FromStr::Err">Err</a>: <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a>,&nbsp;</span></code></span></h3><div class='docblock'><p>Returns an iterator over the converted items.</p>
+
+<h1 id='panic' class='section-header'><a href='#panic'>Panic</a></h1>
+<p>Panics when an error occures.</p>
+</div></div>
+        <h2 id='implementors' class='small-section-header'>
+          Implementors<a href='#implementors' class='anchor'></a>
+        </h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><div class='out-of-band'><a class='srclink' href='../src/libaoc/lib.rs.html#243-274' title='goto source code'>[src]</a></div><code>impl&lt;N, S, I&gt; TryConvert&lt;N, S, I&gt; for I <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;N: <a class="trait" href="https://doc.rust-lang.org/nightly/core/str/trait.FromStr.html" title="trait core::str::FromStr">FromStr</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;S: <a class="trait" href="https://doc.rust-lang.org/nightly/core/convert/trait.AsRef.html" title="trait core::convert::AsRef">AsRef</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a>&gt;,<br>&nbsp;&nbsp;&nbsp;&nbsp;I: <a class="trait" href="https://doc.rust-lang.org/nightly/core/iter/iterator/trait.Iterator.html" title="trait core::iter::iterator::Iterator">Iterator</a>&lt;Item = S&gt;,&nbsp;</span></code></li>
+</ul><script type="text/javascript" async
+                         src="../implementors/libaoc/trait.TryConvert.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "libaoc";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
