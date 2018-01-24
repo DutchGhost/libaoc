@@ -4,6 +4,7 @@ use absolute::Absolute;
 
 /// An enum to represent a direction.
 /// Is great to use in maps, or when 'following' some kind of line.
+/// Use an Option<Directon> if there might be a lack of a Directon!
 /// [`turn_right`]: enum.Direction.html#method.turn_right
 /// [`turn_left`]: enum.Direction.html#method.turn_left
 /// [`init`]: enum.Direction.html#variant.Init
