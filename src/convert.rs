@@ -240,7 +240,7 @@ impl ::std::error::Error for FillError {
     #[inline]
     fn description(&self) -> &str {
         match self {
-            &FillError::FillError => "The array was partially ({} of {} items) filled, and therefore dropped."
+            &FillError::FillError => "The array was partially filled, and therefore dropped."
         }
     }
 }
