@@ -5,3 +5,5 @@
 -   Better documentation and examples on the current lib.
 
 -   Add proper tests and benchmarks.
+
+-   Add support for collecting mutable references into an array. Now there's lifetime issues...
