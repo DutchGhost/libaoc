@@ -5,7 +5,7 @@
 //! a trait for calculating the `manhatten-distance`,
 //! a trait implemented on all integers, that allow to get the absolute value of that integer,
 //! and a trait for quickly sorting a tuple in ascending or descending order.
-//! 
+//!
 //! Also supports reading tekst from a file into a String, or Vec<u8>, however this is a feature of this library, and is considered unstable.
 #![cfg_attr(feature = "nightly", feature(try_from))]
 

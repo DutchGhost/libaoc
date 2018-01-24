@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ManhattenDst` trait in crate `libaoc`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ManhattenDst">
+
+    <title>libaoc::movement::ManhattenDst - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc trait">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
+        
+        <p class='location'>Trait ManhattenDst</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#required-methods">Required Methods</a><div class="sidebar-links"><a href="#tymethod.manhattendst">manhattendst</a></div><a class="sidebar-title" href="#foreign-impls">Implementations on Foreign Types</a><div class="sidebar-links"><a href="#impl-ManhattenDst%3CN%3E">(N, N)</a><a href="#impl-ManhattenDst%3CN%3E">(N, N, N)</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='../index.html'>libaoc</a>::<wbr><a href='index.html'>movement</a></p><script>window.sidebarCurrent = {name: 'ManhattenDst', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>libaoc</a>::<wbr><a href='index.html'>movement</a>::<wbr><a class="trait" href=''>ManhattenDst</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/libaoc/movement.rs.html#411-417' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait ManhattenDst&lt;N&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;N: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/arith/trait.Add.html" title="trait core::ops::arith::Add">Add</a>&lt;Output = N&gt;,&nbsp;</span>{
+    fn <a href='#tymethod.manhattendst' class='fnname'>manhattendst</a>(self) -&gt; N;
+}</pre><div class='docblock'><p>Returns the manhatten distance of any Position with type N.
+A position is either a tuple, or the struct <a href="struct.Position.html">Position</a>.
+the manhatten distance is the sum of the absolute values of a coordinate.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class="rust rust-example-rendered">
+<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">libaoc</span>;
+<span class="kw">use</span> <span class="ident">libaoc</span>::<span class="ident">movement</span>::{<span class="ident">ManhattenDst</span>, <span class="ident">Position</span>};
+
+<span class="kw">fn</span> <span class="ident">main</span>() {
+    <span class="kw">let</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">Position</span>::<span class="ident">new</span>(<span class="op">-</span><span class="number">1</span>, <span class="number">11i16</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="number">12</span>, <span class="ident">pos</span>.<span class="ident">manhattendst</span>());
+}</pre>
+</div>
+            <h2 id='required-methods' class='small-section-header'>
+              Required Methods<a href='#required-methods' class='anchor'></a>
+            </h2>
+            <div class='methods'>
+        <h3 id='tymethod.manhattendst' class='method'><span id='manhattendst.v' class='invisible'><code>fn <a href='#tymethod.manhattendst' class='fnname'>manhattendst</a>(self) -&gt; N</code></span></h3><div class='docblock'><p>Returns the <code>manhattendistance</code> of self.</p>
+</div></div>
+                <h2 id='foreign-impls' class='small-section-header'>
+                  Implementations on Foreign Types<a href='#foreign-impls' class='anchor'></a>
+                </h2>
+            <h3 id='impl-ManhattenDst%3CN%3E' class='impl'><span class='in-band'><code>impl&lt;N&gt; <a class="trait" href="../../libaoc/movement/trait.ManhattenDst.html" title="trait libaoc::movement::ManhattenDst">ManhattenDst</a>&lt;N&gt; for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>N, N<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;N: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/arith/trait.Add.html" title="trait core::ops::arith::Add">Add</a>&lt;Output = N&gt; + <a class="trait" href="../../libaoc/absolute/trait.Absolute.html" title="trait libaoc::absolute::Absolute">Absolute</a>,&nbsp;</span></code><a href='#impl-ManhattenDst%3CN%3E' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/libaoc/movement.rs.html#429-437' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.manhattendst' class="method"><span id='manhattendst.v-1' class='invisible'><code>fn <a href='#method.manhattendst' class='fnname'>manhattendst</a>(self) -&gt; N</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/libaoc/movement.rs.html#434-436' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-ManhattenDst%3CN%3E-1' class='impl'><span class='in-band'><code>impl&lt;N&gt; <a class="trait" href="../../libaoc/movement/trait.ManhattenDst.html" title="trait libaoc::movement::ManhattenDst">ManhattenDst</a>&lt;N&gt; for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>N, N, N<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;N: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/arith/trait.Add.html" title="trait core::ops::arith::Add">Add</a>&lt;Output = N&gt; + <a class="trait" href="../../libaoc/absolute/trait.Absolute.html" title="trait libaoc::absolute::Absolute">Absolute</a>,&nbsp;</span></code><a href='#impl-ManhattenDst%3CN%3E-1' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/libaoc/movement.rs.html#439-447' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.manhattendst-1' class="method"><span id='manhattendst.v-2' class='invisible'><code>fn <a href='#method.manhattendst' class='fnname'>manhattendst</a>(self) -&gt; N</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../../src/libaoc/movement.rs.html#444-446' title='goto source code'>[src]</a></span></h4>
+</div></span>
+        <h2 id='implementors' class='small-section-header'>
+          Implementors<a href='#implementors' class='anchor'></a>
+        </h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><div class='out-of-band'><a class='srclink' href='../../src/libaoc/movement.rs.html#419-427' title='goto source code'>[src]</a></div><code>impl&lt;N&gt; ManhattenDst&lt;N&gt; for <a class="struct" href="../../libaoc/movement/struct.Position.html" title="struct libaoc::movement::Position">Position</a>&lt;N&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;N: <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/arith/trait.Add.html" title="trait core::ops::arith::Add">Add</a>&lt;Output = N&gt; + <a class="trait" href="../../libaoc/absolute/trait.Absolute.html" title="trait libaoc::absolute::Absolute">Absolute</a>,&nbsp;</span></code></li>
+</ul><script type="text/javascript" async
+                         src="../../implementors/libaoc/movement/trait.ManhattenDst.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>↑</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>↓</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt style="width:31px;">+ / -</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "libaoc";
+    </script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>
