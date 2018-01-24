@@ -10,13 +10,20 @@ pub mod test_arraycollect {
         }
     }
 
-    //tests collecting into an array!
+    impl NonCopy {
+        fn new(num: i64) -> NonCopy {
+            NonCopy{item: num}
+        }
+    }
+
     #[test]
     fn test_array_collect() {
         let mut range = (0..3);
         let result = arraycollect!((&mut range).convert_iter() => [NonCopy; 2]);
 
-        assert_eq!(result, Ok([NonCopy{item: 0}, NonCopy{item: 1}]));
+        let cmp = [NonCopy::new(0), NonCopy::new(1)];
+
+        assert_eq!(result, Ok(cmp));
         assert_eq!(range.next(), Some(2));
 
         let s = String::from("Hello world!");
