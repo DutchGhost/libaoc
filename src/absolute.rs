@@ -12,45 +12,38 @@ pub trait Absolute {
     fn abs(self) -> Self;
 }
 
-/// Used to implement `Absolute` for any i.. integer type.
-/// Any i.. integer type can be negative, so .abs() is needed in order to return the absolute value.
-macro_rules! i_absolute {
-    ($type:ty) => (
-        impl Absolute for $type {
-
-            #[inline]
+macro_rules! rec_i_absolute {
+    ($head:ty) => {
+        impl Absolute for $head {
+            #[inline(always)]
             fn abs(self) -> Self {
                 self.abs()
             }
         }
-    )
+    };
+    ($head:ty, $($tail:ty),*) => {
+        rec_i_absolute!($head);
+        rec_i_absolute!($($tail),*);
+    };
 }
 
-/// Used to implement `Absolute` for any u.. integer type.
-/// Any u.. integer type can not be negative, so `self` is already the absolute value.
-macro_rules! u_absolute {
-    ($type:ty) => (
-        impl Absolute for $type {
-
-            #[inline]
+macro_rules! rec_u_absolute {
+    ($head:ty) => {
+        impl Absolute for $head {
+            #[inline(always)]
             fn abs(self) -> Self {
                 self
             }
         }
-    )
+    };
+    ($head:ty, $($tail:ty),*) => {
+        rec_u_absolute!($head);
+        rec_u_absolute!($($tail),*);
+    };
 }
 
-i_absolute!(i64);
-i_absolute!(i32);
-i_absolute!(i16);
-i_absolute!(i8);
-i_absolute!(isize);
-
-u_absolute!(u64);
-u_absolute!(u32);
-u_absolute!(u16);
-u_absolute!(u8);
-u_absolute!(usize);
+rec_i_absolute!(i64, i32, i16, i8, isize);
+rec_u_absolute!(u64, u32, u16, u8, usize);
 
 impl<N: Absolute> Absolute for (N, N) {
     #[inline]
