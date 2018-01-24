@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["ReadFile","Opens a file, an reads it to whatever type it was called on. #Examples `extern crate libaoc; use libaoc::reading::ReadFile; fn main() { let puzzle = match Vec::<u8>::read_file(r\"test.txt\") { Ok(content) => content, Err(_) => Vec::new(), }; assert_eq!(b\"hello! this is a test!\"[..], puzzle[..]); }`"]]});

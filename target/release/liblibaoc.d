@@ -1,1 +1,0 @@
-C:\Users\Kasper\Documents\Rust\libaoc\target\release\liblibaoc.rlib: C:\Users\Kasper\Documents\Rust\libaoc\src\absolute.rs C:\Users\Kasper\Documents\Rust\libaoc\src\movement.rs C:\Users\Kasper\Documents\Rust\libaoc\src\convert.rs C:\Users\Kasper\Documents\Rust\libaoc\src\lib.rs

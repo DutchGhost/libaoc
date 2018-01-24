@@ -1,1 +1,0 @@
-initSidebarItems({"trait":[["Absolute","A trait to get the absolute value of a number. #Examples `extern crate libaoc; use libaoc::absolute::Absolute; fn main() { assert_eq!(10, (-10i32).abs()); assert_eq!(20, 20u32.abs()); }`"]]});
