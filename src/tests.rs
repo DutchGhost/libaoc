@@ -10,6 +10,7 @@ pub mod test_arraycollect {
         }
     }
 
+    //tests collecting into an array!
     #[test]
     fn test_array_collect() {
         let mut range = (0..3);
