@@ -13,8 +13,3 @@
     pherhaps an error if the Iterator still has items left after the array is build is also nice?.
 
     Or return the leftover as an Iterator?
-
--   Add a recursive definition of convert_func!(),
-    so something like:
-        convert_func!(ArrayConvert, into_array3 -> [i64 3], into_array4 -> [i64; 4]);
-    can be written. All functions should be functions of the trait 'ArrayConvert' (in this case).
