@@ -200,36 +200,6 @@ where
     }
 }
 
-/// This macro makes it easy to convert an Iterator into an array.
-/// The `type` of the array has to be specified when this macro is called.
-///
-/// The array that get's build uses mem::unitialized to prevent unnecessary allocation,
-/// however if the Iterator has less items than the lenght of the array, this means there is still
-/// unitialized memory. In this case, the macro will return an error, and drop the array that was build.
-/// # Examples
-/// ```
-/// #[macro_use]
-/// extern crate libaoc;
-///
-/// use libaoc::movement::Position;
-/// use libaoc::convert::Convert;
-///
-/// #[derive(Debug, PartialEq)]
-/// struct noncopy{item: i64}
-/// impl From<i64> for noncopy {
-///     fn from(num: i64) -> noncopy {
-///         noncopy{item: num}
-///     }
-/// }
-/// fn main() {
-///
-///     let ns = vec![1, 2, 3];
-///
-///     let arr = arraycollect!(ns.into_iter().convert_iter() => [noncopy; 2]);
-///     assert_eq!(Ok([noncopy{item: 1}, noncopy{item: 2}]), arr);
-/// }
-/// ```
-
 #[derive(Debug, Eq, PartialEq, Ord, PartialOrd)]
 pub enum FillError {
     FillError,
@@ -253,6 +223,35 @@ impl ::std::fmt::Display for FillError {
     }
 }
 
+/// This macro makes it easy to convert an Iterator into an array.
+/// The `type` of the array has to be specified when this macro is called.
+///
+/// The array that get's build uses mem::unitialized to prevent unnecessary allocation,
+/// however if the Iterator has less items than the lenght of the array, this means there is still
+/// unitialized memory. In this case, the macro will return an error, and drop the array that was build.
+/// # Examples
+/// ```
+/// #[macro_use]
+/// extern crate libaoc;
+///
+/// use libaoc::movement::Position;
+/// use libaoc::convert::Convert;
+///
+/// #[derive(Debug, PartialEq)]
+/// struct noncopy{item: i64}
+///
+/// impl From<i64> for noncopy {
+///     fn from(num: i64) -> noncopy {
+///         noncopy{item: num}
+///     }
+/// }
+/// fn main() {
+///
+///     let ss = vec![1, 2, 3];
+///     let arr = arraycollect!(ss.into_iter().convert_iter() => [noncopy; 2]);
+///     assert_eq!(Ok([noncopy{item: 1}, noncopy{item: 2}]), arr);
+/// }
+/// ```
 #[macro_export]
 macro_rules! arraycollect {
     ($iter:expr => [$tgt:ty; $num:tt]) => (
@@ -314,7 +313,8 @@ macro_rules! arraycollect {
                 }
             }
 
-            let array = PartialArray::new();
+            //pass in $tgt as generic paremeter, fill_array takes an array with items of $tgt.
+            let array: PartialArray<$tgt> = PartialArray::new();
             array.fill_array($iter)
         }
     )
