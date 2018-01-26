@@ -259,14 +259,14 @@ macro_rules! arraycollect {
         {
             use ::std::mem;
 
-            struct PartialArray {
-                data: mem::ManuallyDrop<[$tgt; $num]>,
+            struct PartialArray<T> {
+                data: mem::ManuallyDrop<[T; $num]>,
                 fill: usize,
             }
 
-            impl PartialArray {
+            impl <T>PartialArray<T> {
                 #[inline]
-                fn new() -> PartialArray {
+                fn new() -> PartialArray<T> {
                     unsafe {
                         PartialArray {
                             data: mem::ManuallyDrop::new(mem::uninitialized()),
@@ -276,7 +276,7 @@ macro_rules! arraycollect {
                 }
 
                 #[inline]
-                fn fill_array<I: Iterator<Item = $tgt>>(mut self, iter: I) -> Result<[$tgt; $num], $crate::convert::FillError>
+                fn fill_array<I: Iterator<Item = T>>(mut self, iter: I) -> Result<[T; $num], $crate::convert::FillError>
                 {
                     for (dst, src) in self.data.iter_mut().zip(iter) {
                         unsafe {
@@ -295,7 +295,7 @@ macro_rules! arraycollect {
                     }
                 }
                 #[inline]
-                fn finish(mut self) -> [$tgt; $num] {
+                fn finish(mut self) -> [T; $num] {
                     unsafe {
                         let rd = ::std::ptr::read(&mut self.data);
                         let ret = mem::ManuallyDrop::into_inner(rd);
@@ -305,87 +305,16 @@ macro_rules! arraycollect {
                 }
             }
 
-            impl Drop for PartialArray {
+            impl <T>Drop for PartialArray<T> {
                 #[inline]
                 fn drop(&mut self) {
                     unsafe {
-                        ::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);
+                        ::std::ptr::drop_in_place::<[T]>(&mut self.data[0..self.fill]);
                     }
                 }
             }
 
             let array = PartialArray::new();
-            array.fill_array($iter)
-        }
-    )
-}
-
-
-#[macro_export]
-macro_rules! arraycollectmut {
-    ($iter:expr => [$tgt:ty; $num:tt]) => (
-        {
-            use ::std::mem;
-            use std::marker::PhantomData;
-
-            struct PartialArray<'a, T: 'a> {
-                data: mem::ManuallyDrop<[$tgt; $num]>,
-                fill: usize,
-                phantom: PhantomData<&'a T>
-            }
-
-            impl <'a, T>PartialArray<'a, T> {
-                #[inline]
-                fn new() -> PartialArray<'a, T> {
-                    unsafe {
-                        PartialArray {
-                            data: mem::ManuallyDrop::new(mem::uninitialized()),
-                            fill: 0,
-                            phantom: PhantomData,
-                        }
-                    }
-                }
-
-                #[inline]
-                fn fill_array<I: Iterator<Item = $tgt>>(mut self, iter: I) -> Result<[$tgt; $num], $crate::convert::FillError>
-                {
-                    for (dst, src) in self.data.iter_mut().zip(iter) {
-                        unsafe {
-                            ::std::ptr::write(dst, src);
-                        }
-                        self.fill += 1;
-                    }
-
-                    //if the number of items filled is not equal to the number of items that should have been written,
-                    //return an error.
-                    if self.fill != $num {
-                        Err($crate::convert::FillError::FillError)
-                    }
-                    else {
-                        Ok(self.finish())
-                    }
-                }
-                #[inline]
-                fn finish(mut self) -> [$tgt; $num] {
-                    unsafe {
-                        let rd = ::std::ptr::read(&mut self.data);
-                        let ret = mem::ManuallyDrop::into_inner(rd);
-                        mem::forget(self);
-                        ret
-                    }
-                }
-            }
-
-            impl <'a, T> Drop for PartialArray<'a, T> {
-                #[inline]
-                fn drop(&mut self) {
-                    unsafe {
-                        ::std::ptr::drop_in_place::<[$tgt]>(&mut self.data[0..self.fill]);
-                    }
-                }
-            }
-
-            let array = PartialArray::<u8>::new();
             array.fill_array($iter)
         }
     )

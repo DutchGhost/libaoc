@@ -34,7 +34,7 @@ pub mod test_arraycollect {
         let mut v = vec![NonCopy::new(1), NonCopy::new(2), NonCopy::new(4)];
 
         {
-            let mut arr = arraycollectmut!(v.iter_mut() => [&'a mut NonCopy; 3]).unwrap();
+            let mut arr = arraycollect!(v.iter_mut() => [&'super_long_lifetime mut NonCopy; 3]).unwrap();
 
             //if we iterate over 'arr', we get a mutable reference, to a mutable reference, to a NonCopy. Double deref.
             for item in arr.iter_mut() {
