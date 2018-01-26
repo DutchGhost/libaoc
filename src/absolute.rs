@@ -42,6 +42,20 @@ macro_rules! rec_u_absolute {
     };
 }
 
+//@FIXME!
+// macro_rules! rec_u_absolute {
+//     ($($tail:ty,)+) => {
+//         impl Absolute for $tail {
+//             #[inline(always)]
+//             fn abs(self) -> Self {
+//                 self
+//             }
+//         }
+//         rec_u_absolute!($($tail,)*);
+//     };
+// }
+
+
 rec_i_absolute!(i64, i32, i16, i8, isize);
 rec_u_absolute!(u64, u32, u16, u8, usize);
 

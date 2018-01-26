@@ -34,13 +34,12 @@ pub mod test_arraycollect {
         let mut v = vec![NonCopy::new(1), NonCopy::new(2), NonCopy::new(4)];
 
         {
-            let mut arr = arraycollectmut!(v.iter_mut() => [NonCopy; 3]).unwrap();
+            let mut arr = arraycollectmut!(v.iter_mut() => [&'a mut NonCopy; 3]).unwrap();
 
             //if we iterate over 'arr', we get a mutable reference, to a mutable reference, to a NonCopy. Double deref.
             for item in arr.iter_mut() {
                 **item = NonCopy::new(0);
             }
-
             assert_eq!([&mut NonCopy::new(0), &mut NonCopy::new(0), &mut NonCopy::new(0)], arr);
         }
         assert_eq!(vec![NonCopy::new(0), NonCopy::new(0), NonCopy::new(0)], v);
