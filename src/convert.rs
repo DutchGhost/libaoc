@@ -147,7 +147,7 @@ where
     type Iterable: Iterator<Item = U>;
 
     /// Returns a vector of all completed conversions.
-    fn convert(self) -> Vec<U>;
+    fn convert_into_vec(self) -> Vec<U>;
 
     /// Converts the stream, and writes the items into `slice`. Returns how many elements where written to the slice.
     ///
@@ -181,7 +181,7 @@ where
     type Iterable = ::std::iter::Map<I, fn(T) -> U>;
 
     #[inline]
-    fn convert(self) -> Vec<U> {
+    fn convert_into_vec(self) -> Vec<U> {
         self.convert_iter().collect()
     }
 
