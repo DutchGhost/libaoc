@@ -41,6 +41,7 @@ mod tests;
 /// use libaoc::moved;
 /// fn main() {}
 /// ```
+#[inline(always)]
 pub fn moved<T>(x: T) -> T { x }
 
 /// Returns a tuple, sorted by the max value.
