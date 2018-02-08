@@ -343,6 +343,14 @@ where
     {
         self.clone().into()
     }
+
+    /// Copies x and y into a tuple
+    pub fn cpy_into_tuple(&self) -> (N, N)
+    where
+        N: Copy
+    {
+        (*self).into()
+    }
 }
 
 impl<N: Absolute> Absolute for Position<N> {
