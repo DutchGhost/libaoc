@@ -30,6 +30,8 @@ pub trait ReadFile {
 
 impl ReadFile for String {
     type Content = String;
+
+    #[inline]
     fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
         let mut s = String::new();
         let mut bufreader = into_buf_reader(path)?;
@@ -38,8 +40,10 @@ impl ReadFile for String {
     }
 }
 
-impl<T> ReadFile for Vec<T> {
+impl <T>ReadFile for Vec<T> {
     type Content = Vec<u8>;
+
+    #[inline]
     fn read_file<S: AsRef<OsStr>>(path: S) -> Result<Self::Content, io::Error> {
         let mut v: Vec<u8> = Vec::new();
         let mut bufreader = into_buf_reader(path)?;

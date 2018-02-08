@@ -127,7 +127,7 @@ where
 ///
 ///     let tuples = vec![tuple1, tuple2, tuple3];
 ///
-///     let Positions: Vec<Position<usize>> = tuples.into_iter().convert();
+///     let Positions: Vec<Position<usize>> = tuples.into_iter().convert_into_vec();
 ///
 ///     assert_eq!(vec![Position::new(0, 0), Position::new(1, 1), Position::new(2, 2)], Positions);
 ///

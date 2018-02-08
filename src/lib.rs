@@ -20,6 +20,29 @@ pub mod reading;
 #[cfg(test)]
 mod tests;
 
+/// Forces a move. If the `moved` call would be deleted, rust complains that current.next can't be borrowed more than once at a time.
+/// # Examples
+/// ```
+/// struct List {
+///     next: Option<Box<List>>
+/// }
+/// impl List {
+///     fn walk_the_list(&mut self) {
+///     let mut current = self;
+///     loop {
+///         match moved(current).next {
+///             None => return,
+///             Some(ref mut inner) => current = inner,
+///             }
+///         }
+///     }
+/// }
+/// extern crate libaoc;
+/// use libaoc::moved;
+/// fn main() {}
+/// ```
+pub fn moved<T>(x: T) -> T { x }
+
 /// Returns a tuple, sorted by the max value.
 /// # Examples
 /// ```
