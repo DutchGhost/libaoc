@@ -44,6 +44,50 @@ mod tests;
 #[inline(always)]
 pub fn moved<T>(x: T) -> T { x }
 
+/// Copies the passed in reference
+/// # Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::copy;
+/// fn main() {
+///     let mut n = 10;
+///     let mut copy = {
+///         let mut mut_ref = &mut n;
+///         let copy = copy(mut_ref);
+///         *mut_ref += 1;
+///         copy
+///     };
+///     
+///     copy += 1;
+/// 
+///     assert_eq!(copy, n);
+/// }
+/// ```
+#[inline(always)]
+pub fn copy<T: Copy>(x: &T) -> T { *x }
+
+/// Clones the passed in reference
+/// # Examples
+/// ```
+/// extern crate libaoc;
+/// use libaoc::clone;
+/// fn main() {
+///     let mut n = String::from("Hello!");
+///     let mut clone = {
+///         let mut mut_ref = &mut n;
+///         let clone = clone(mut_ref);
+///         mut_ref.push('!');
+///         clone
+///     };
+///     
+///     clone.push('!');
+/// 
+///     assert_eq!(clone, n);
+/// }
+/// ```
+#[inline(always)]
+pub fn clone<T: Clone> (x: &T) -> T { (*x).clone() }
+
 /// Returns a tuple, sorted by the max value.
 /// # Examples
 /// ```
