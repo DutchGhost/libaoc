@@ -191,6 +191,22 @@ where
     }
 }
 
+/// An easy way to combine the solutions of the problems.
+/// When this macro is called, a macro-name, day, year and implementation must be given.
+/// This macro then creates a macro with the given name, running the implementation when called.
+#[macro_export]
+macro_rules! aoc {
+    ($day_name:ident, $day:expr, $year:expr, $implementation:block) => (
+        macro_rules! $day_name {
+            () => (
+                println!("Running day {} of year {}:", $day, $year);
+                $implementation
+                println!();
+            );
+        }
+    )
+}
+
 /// Applies any given operator to any given tuple.
 /// # Examples
 /// ```
