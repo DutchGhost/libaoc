@@ -1,8 +1,8 @@
-use std::fs::File;
-use std::io::{self, BufReader};
-use std::io::prelude::*;
-use std::path::Path;
 use std::ffi::OsStr;
+use std::fs::File;
+use std::io::prelude::*;
+use std::io::{self, BufReader};
+use std::path::Path;
 
 fn into_buf_reader<S: AsRef<OsStr>>(s: S) -> Result<BufReader<File>, io::Error> {
     let path: &Path = Path::new(s.as_ref());
@@ -40,7 +40,7 @@ impl ReadFile for String {
     }
 }
 
-impl <T>ReadFile for Vec<T> {
+impl<T> ReadFile for Vec<T> {
     type Content = Vec<u8>;
 
     #[inline]

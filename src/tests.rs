@@ -1,16 +1,18 @@
 pub mod test_arraycollect {
     use convert::Convert;
     #[derive(Debug, PartialEq)]
-    struct NonCopy{item: i64}
+    struct NonCopy {
+        item: i64,
+    }
     impl From<i64> for NonCopy {
         fn from(num: i64) -> NonCopy {
-            NonCopy{item: num}
+            NonCopy { item: num }
         }
     }
 
     impl NonCopy {
         fn new(num: i64) -> NonCopy {
-            NonCopy{item: num}
+            NonCopy { item: num }
         }
     }
 
@@ -40,7 +42,14 @@ pub mod test_arraycollect {
             for item in arr.iter_mut() {
                 **item = NonCopy::new(0);
             }
-            assert_eq!([&mut NonCopy::new(0), &mut NonCopy::new(0), &mut NonCopy::new(0)], arr);
+            assert_eq!(
+                [
+                    &mut NonCopy::new(0),
+                    &mut NonCopy::new(0),
+                    &mut NonCopy::new(0)
+                ],
+                arr
+            );
         }
         assert_eq!(vec![NonCopy::new(0), NonCopy::new(0), NonCopy::new(0)], v);
     }

@@ -42,7 +42,9 @@ mod tests;
 /// fn main() {}
 /// ```
 #[inline(always)]
-pub fn moved<T>(x: T) -> T { x }
+pub fn moved<T>(x: T) -> T {
+    x
+}
 
 /// Copies the passed in reference
 /// # Examples
@@ -59,12 +61,14 @@ pub fn moved<T>(x: T) -> T { x }
 ///     };
 ///     
 ///     copy += 1;
-/// 
+///
 ///     assert_eq!(copy, n);
 /// }
 /// ```
 #[inline(always)]
-pub fn copy<T: Copy>(x: &T) -> T { *x }
+pub fn copy<T: Copy>(x: &T) -> T {
+    *x
+}
 
 /// Clones the passed in reference
 /// # Examples
@@ -81,12 +85,14 @@ pub fn copy<T: Copy>(x: &T) -> T { *x }
 ///     };
 ///     
 ///     clone.push('!');
-/// 
+///
 ///     assert_eq!(clone, n);
 /// }
 /// ```
 #[inline(always)]
-pub fn clone<T: Clone> (x: &T) -> T { (*x).clone() }
+pub fn clone<T: Clone>(x: &T) -> T {
+    (*x).clone()
+}
 
 /// Returns a tuple, sorted by the max value.
 /// # Examples
@@ -196,15 +202,15 @@ where
 /// This macro then creates a macro with the given name, running the implementation when called.
 #[macro_export]
 macro_rules! aoc {
-    ($day_name:ident, $day:expr, $year:expr, $implementation:block) => (
+    ($day_name:ident, $day:expr, $year:expr, $implementation:block) => {
         macro_rules! $day_name {
-            () => (
-                println!("Running day {} of year {}:", $day, $year);
-                $implementation
-                println!();
-            );
-        }
-    )
+                    () => (
+                        println!("Running day {} of year {}:", $day, $year);
+                        $implementation
+                        println!();
+                    );
+                }
+    };
 }
 
 /// Applies any given operator to any given tuple.
@@ -235,7 +241,9 @@ macro_rules! apply {
 /// ```
 #[macro_export]
 macro_rules! sub {
-    ($tup:tt) => (apply!(-, $tup))
+    ($tup:tt) => {
+        apply!(-, $tup)
+    };
 }
 /// Adds all items in a tuple.
 /// # Examples
@@ -249,7 +257,9 @@ macro_rules! sub {
 /// ```
 #[macro_export]
 macro_rules! add {
-    ($tup:tt) => (apply!(+, $tup))
+    ($tup:tt) => {
+        apply!(+, $tup)
+    };
 }
 /// Divides all items in a tuple. Panics if divided by 0.
 /// # Examples
@@ -263,7 +273,9 @@ macro_rules! add {
 /// ```
 #[macro_export]
 macro_rules! div {
-    ($tup:tt) => (apply!(/, $tup))
+    ($tup:tt) => {
+        apply!(/, $tup)
+    };
 }
 /// Multiplies all items in a tuple.
 /// # Examples
@@ -277,7 +289,9 @@ macro_rules! div {
 /// ```
 #[macro_export]
 macro_rules! mul {
-    ($tup:tt) => (apply!(*, $tup))
+    ($tup:tt) => {
+        apply!(*, $tup)
+    };
 }
 /// 'Remainders' all items in a tuple.
 /// # Examples
@@ -291,7 +305,9 @@ macro_rules! mul {
 /// ```
 #[macro_export]
 macro_rules! rem {
-    ($tup:tt) => (apply!(%, $tup))
+    ($tup:tt) => {
+        apply!(%, $tup)
+    };
 }
 
 /// This macro is used to generate `noop` functions.

@@ -55,7 +55,6 @@ macro_rules! rec_u_absolute {
 //     };
 // }
 
-
 rec_i_absolute!(i64, i32, i16, i8, isize);
 rec_u_absolute!(u64, u32, u16, u8, usize);
 

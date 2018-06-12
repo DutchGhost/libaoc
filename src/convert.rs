@@ -1,4 +1,4 @@
-use ::std::str::FromStr;
+use std::str::FromStr;
 
 /// This trait allows to convert a stream of `str`'s, into a stream or collection of type U.
 /// Return an Error when the conversion fails, but is able to produce the next value that has no Error.
@@ -96,8 +96,7 @@ where
             if let Ok(converted) = src {
                 *dst = converted;
                 number_of_writes += 1;
-            }
-            else {
+            } else {
                 return Err(number_of_writes);
             }
         }
@@ -109,7 +108,6 @@ where
         self.map(|item| item.as_ref().parse())
     }
 }
-
 
 /// This trait allows to convert a stream with items of type T into a stream or collection with items of type U.
 ///
@@ -138,7 +136,7 @@ where
 ///     assert_eq!(Some(Position::new(3, 4)), convert_iter.next());
 /// }
 /// ```
-pub trait Convert<T, U, I,>
+pub trait Convert<T, U, I>
 where
     U: From<T>,
     I: Iterator<Item = T>,
@@ -206,17 +204,15 @@ pub enum FillError {
 }
 
 impl ::std::error::Error for FillError {
-
     #[inline]
     fn description(&self) -> &str {
         match self {
-            &FillError::FillError => "The array was partially filled, and therefore dropped."
+            &FillError::FillError => "The array was partially filled, and therefore dropped.",
         }
     }
 }
 
 impl ::std::fmt::Display for FillError {
-
     #[inline]
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         write!(f, "{}", self)

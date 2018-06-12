@@ -1,6 +1,6 @@
-use ::std::ops::{Add, AddAssign, Sub, SubAssign};
-use ::std::fmt::{self, Display, Formatter};
 use absolute::Absolute;
+use std::fmt::{self, Display, Formatter};
+use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 /// An enum to represent a direction.
 /// Is great to use in maps, or when 'following' some kind of line.
@@ -347,7 +347,7 @@ where
     /// Copies x and y into a tuple
     pub fn cpy_into_tuple(&self) -> (N, N)
     where
-        N: Copy
+        N: Copy,
     {
         (*self).into()
     }
