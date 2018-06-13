@@ -188,7 +188,7 @@ where
     /// Returns a new Position.
     #[inline]
     pub fn new(x: N, y: N) -> Position<N> {
-        Position { x: x, y: y }
+        Position { x, y }
     }
 
     /// Changes the position with `steps` based on the direction.
@@ -210,11 +210,11 @@ where
     ///
     #[inline]
     pub fn change(&mut self, direction: &Direction, steps: N) {
-        match direction {
-            &Direction::Up => self.y -= steps,
-            &Direction::Down => self.y += steps,
-            &Direction::Right => self.x += steps,
-            &Direction::Left => self.x -= steps,
+        match *direction {
+            Direction::Up => self.y -= steps,
+            Direction::Down => self.y += steps,
+            Direction::Right => self.x += steps,
+            Direction::Left => self.x -= steps,
         }
     }
 
@@ -237,11 +237,11 @@ where
     /// [`change`]: #method.change
     #[inline]
     pub fn rev_change(&mut self, direction: &Direction, steps: N) {
-        match direction {
-            &Direction::Up => self.y += steps,
-            &Direction::Down => self.y -= steps,
-            &Direction::Right => self.x += steps,
-            &Direction::Left => self.x -= steps,
+        match *direction {
+            Direction::Up => self.y += steps,
+            Direction::Down => self.y -= steps,
+            Direction::Right => self.x += steps,
+            Direction::Left => self.x -= steps,
         }
     }
 
@@ -271,7 +271,7 @@ where
     /// }
     /// ```
     #[inline]
-    pub fn is_adjecent<'a, 'b>(&'a self, other: &'b Position<N>) -> bool
+    pub fn is_adjecent(&self, other: &Position<N>) -> bool
     where
         N: Sub<Output = N> + Clone + From<i8> + PartialEq + Absolute,
     {

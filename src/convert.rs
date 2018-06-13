@@ -1,3 +1,4 @@
+use std::iter::Map;
 use std::str::FromStr;
 
 /// This trait allows to convert a stream of `str`'s, into a stream or collection of type U.
@@ -75,6 +76,8 @@ where
     fn try_convert_iter(self) -> Self::Iterable;
 }
 
+type MapConvert<I, S, U, E> = Map<I, fn(S) -> Result<U, E>>;
+
 impl<U, S, I> TryConvert<U, S, I> for I
 where
     U: FromStr,
@@ -82,7 +85,7 @@ where
     I: Iterator<Item = S>,
 {
     type Error = <U as FromStr>::Err;
-    type Iterable = ::std::iter::Map<I, fn(S) -> Result<U, Self::Error>>;
+    type Iterable = MapConvert<I, S, U, Self::Error>;
 
     #[inline]
     fn try_convert(self) -> Result<Vec<U>, Self::Error> {
@@ -176,7 +179,7 @@ where
     U: From<T>,
     I: Iterator<Item = T>,
 {
-    type Iterable = ::std::iter::Map<I, fn(T) -> U>;
+    type Iterable = Map<I, fn(T) -> U>;
 
     #[inline]
     fn convert_into_vec(self) -> Vec<U> {
@@ -194,7 +197,7 @@ where
 
     #[inline]
     fn convert_iter(self) -> Self::Iterable {
-        self.map(move |item| U::from(item))
+        self.map(U::from)
     }
 }
 
@@ -206,8 +209,8 @@ pub enum FillError {
 impl ::std::error::Error for FillError {
     #[inline]
     fn description(&self) -> &str {
-        match self {
-            &FillError::FillError => "The array was partially filled, and therefore dropped.",
+        match *self {
+            FillError::FillError => "The array was partially filled, and therefore dropped.",
         }
     }
 }

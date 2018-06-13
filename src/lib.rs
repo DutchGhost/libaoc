@@ -204,12 +204,12 @@ where
 macro_rules! aoc {
     ($day_name:ident, $day:expr, $year:expr, $implementation:block) => {
         macro_rules! $day_name {
-                    () => (
-                        println!("Running day {} of year {}:", $day, $year);
-                        $implementation
-                        println!();
-                    );
-                }
+                            () => (
+                                println!("Running day {} of year {}:", $day, $year);
+                                $implementation
+                                println!();
+                            );
+                        }
     };
 }
 
